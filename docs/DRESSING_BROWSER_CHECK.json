@@ -61,6 +61,14 @@
     {
       "name": "double click resets camera",
       "passed": true
+    },
+    {
+      "name": "missing GLB shows real error without substitute",
+      "passed": true
+    },
+    {
+      "name": "retry recovers supplied composed GLB",
+      "passed": true
     }
   ],
   "javascriptErrors": []
