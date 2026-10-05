@@ -30,6 +30,8 @@ class SettingsScreen extends ConsumerWidget {
               Card(
                 child: ListTile(
                   leading: CircleAvatar(
+                    radius: 24,
+                    foregroundColor: theme.colorScheme.primary,
                     backgroundColor: theme.colorScheme.surfaceContainerHighest,
                     child: Text(
                       user.firstName.isEmpty
@@ -42,10 +44,15 @@ class SettingsScreen extends ConsumerWidget {
                     user.emailVerified
                         ? user.email
                         : '${user.email} · email non vérifié',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall,
                   ),
                 ),
               ),
             const SizedBox(height: AppTheme.spacingM),
+            Text('PERSONNALISATION', style: theme.textTheme.labelSmall),
+            const SizedBox(height: 12),
             _tile(
               context,
               Icons.tune,
@@ -62,10 +69,10 @@ class SettingsScreen extends ConsumerWidget {
             ),
             _tile(
               context,
-              Icons.history,
-              'Historique',
+              Icons.place_outlined,
+              'Mes destinations',
               null,
-              () => context.push('/history'),
+              () => context.push('/destinations'),
             ),
             _tile(
               context,
@@ -86,12 +93,18 @@ class SettingsScreen extends ConsumerWidget {
               title: Text('Langue'),
               subtitle: Text('Français'),
             ),
+            const SizedBox(height: 24),
+            Text(
+              'DONN${String.fromCharCode(201)}ES',
+              style: theme.textTheme.labelSmall,
+            ),
+            const SizedBox(height: 12),
             _tile(
               context,
-              Icons.place_outlined,
-              'Mes destinations',
+              Icons.history,
+              'Historique',
               null,
-              () => context.push('/destinations'),
+              () => context.push('/history'),
             ),
             _tile(
               context,
@@ -108,6 +121,7 @@ class SettingsScreen extends ConsumerWidget {
               () => context.push('/privacy/export'),
             ),
             const Divider(height: AppTheme.spacingXl),
+            Text('COMPTE', style: theme.textTheme.labelSmall),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Se déconnecter'),
@@ -140,12 +154,14 @@ class SettingsScreen extends ConsumerWidget {
     String? subtitle,
     VoidCallback onTap,
   ) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      subtitle: subtitle != null ? Text(subtitle) : null,
-      trailing: const Icon(Icons.chevron_right),
-      onTap: onTap,
+    return Card(
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(title),
+        subtitle: subtitle != null ? Text(subtitle) : null,
+        trailing: const Icon(Icons.chevron_right),
+        onTap: onTap,
+      ),
     );
   }
 

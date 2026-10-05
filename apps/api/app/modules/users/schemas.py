@@ -42,6 +42,11 @@ class UserOut(StrictModel):
     mannequin_presentation: MannequinPresentation
     email_verified: bool
     created_at: datetime
+    onboarding_steps: list[str] = Field(default_factory=list)
+
+
+class OnboardingStepIn(StrictModel):
+    step: str = Field(pattern=r"^(profile|preferences|consents)$")
 
 
 class UpdateProfileRequest(StrictModel):

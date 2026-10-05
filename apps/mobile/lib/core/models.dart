@@ -8,6 +8,7 @@ class User {
     required this.email,
     required this.mannequinPresentation,
     required this.emailVerified,
+    this.onboardingSteps = const ['profile', 'preferences', 'consents'],
   });
 
   final String id;
@@ -15,6 +16,12 @@ class User {
   final String email;
   final String mannequinPresentation; // male | female
   final bool emailVerified;
+  final List<String> onboardingSteps;
+  String? get pendingOnboardingStep => !onboardingSteps.contains('preferences')
+      ? 'preferences'
+      : !onboardingSteps.contains('consents')
+      ? 'consents'
+      : null;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json['id'] as String,
@@ -22,6 +29,9 @@ class User {
     email: json['email'] as String,
     mannequinPresentation: json['mannequin_presentation'] as String,
     emailVerified: json['email_verified'] as bool? ?? false,
+    onboardingSteps:
+        (json['onboarding_steps'] as List?)?.cast<String>() ??
+        const ['profile', 'preferences', 'consents'],
   );
 }
 
@@ -53,18 +63,21 @@ class GarmentImage {
     required this.contentType,
     required this.isPrimary,
     this.downloadUrl,
+    this.kind = 'garment',
   });
 
   final String id;
   final String contentType;
   final bool isPrimary;
   final String? downloadUrl;
+  final String kind;
 
   factory GarmentImage.fromJson(Map<String, dynamic> json) => GarmentImage(
     id: json['id'] as String,
     contentType: json['content_type'] as String,
     isPrimary: json['is_primary'] as bool? ?? false,
     downloadUrl: json['download_url'] as String?,
+    kind: json['image_kind'] as String? ?? 'garment',
   );
 }
 
@@ -86,11 +99,37 @@ class Garment {
     this.notes,
     this.visualLevel = 'generic',
     this.images = const [],
+    this.productImageUrl,
   });
 
   final String id;
   final String name;
   final String color;
+  String get colorLabel =>
+      const {
+        'black': 'Noir',
+        'white': 'Blanc',
+        'grey': 'Gris',
+        'gray': 'Gris',
+        'blue': 'Bleu',
+        'light_blue': 'Bleu clair',
+        'navy': 'Marine',
+        'beige': 'Beige',
+        'camel': 'Camel',
+        'brown': 'Marron',
+        'cream': 'Crème',
+        'green': 'Vert',
+        'olive': 'Kaki',
+        'red': 'Rouge',
+        'yellow': 'Jaune',
+        'orange': 'Orange',
+        'purple': 'Violet',
+        'pink': 'Rose',
+        'silver': 'Argenté',
+        'gold': 'Doré',
+        'unknown': 'À préciser',
+      }[color.toLowerCase().replaceAll(' ', '_')] ??
+      color;
   final GarmentCategory category;
   final String? brand;
   final String? size;
@@ -104,6 +143,17 @@ class Garment {
   final String? notes;
   final String visualLevel; // generic | approximate | exact
   final List<GarmentImage> images;
+  final String? productImageUrl;
+  List<String> get displayImageUrls {
+    final photos =
+        images
+            .where((i) => i.kind == 'garment' && i.downloadUrl != null)
+            .toList()
+          ..sort(
+            (a, b) => (b.isPrimary ? 1 : 0).compareTo(a.isPrimary ? 1 : 0),
+          );
+    return [...photos.map((i) => i.downloadUrl!), ?productImageUrl];
+  }
 
   factory Garment.fromJson(Map<String, dynamic> json) => Garment(
     id: json['id'] as String,
@@ -123,6 +173,7 @@ class Garment {
     season: json['season'] as String? ?? 'all',
     notes: json['notes'] as String?,
     visualLevel: json['visual_representation_level'] as String? ?? 'generic',
+    productImageUrl: json['product_image_url'] as String?,
     images: ((json['images'] as List?) ?? const [])
         .map((e) => GarmentImage.fromJson(e as Map<String, dynamic>))
         .toList(),
@@ -155,6 +206,7 @@ class Garment {
             'id': image.id,
             'content_type': image.contentType,
             'is_primary': image.isPrimary,
+            'image_kind': image.kind,
             // Signed bearer URLs must never persist in the offline cache.
           },
         )

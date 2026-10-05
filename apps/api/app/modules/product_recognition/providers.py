@@ -41,6 +41,9 @@ class GarmentVisualAnalysis(StrictModel):
     material_guess: str | None = Field(default=None, max_length=120)
     style_hints: list[str] = Field(default_factory=list, max_length=10)
     confidence: float = Field(ge=0.0, le=1.0)
+    brand: str | None = Field(default=None, max_length=120)
+    product_name: str | None = Field(default=None, max_length=160)
+    reference: str | None = Field(default=None, max_length=160)
 
 
 @dataclass
@@ -68,7 +71,9 @@ _LABEL_SCHEMA_HINT = (
 _PHOTO_SCHEMA_HINT = (
     "Analyze this garment photo: category_hint (e.g. tshirt, coat, jeans, sneakers), "
     "color (the main color), secondary_colors, pattern, material_guess (only if visually obvious), "
-    "style_hints, and confidence 0..1. Respond ONLY with JSON."
+    "style_hints, brand ONLY when readable (never infer a brand from style), "
+    "product_name as a descriptive garment name, "
+    "reference ONLY when clearly printed (otherwise null), and confidence 0..1. Respond ONLY with JSON."
 )
 
 

@@ -61,6 +61,7 @@ class ActivityContext(StrEnum):
 
 class FeedbackAction(StrEnum):
     LIKE = "like"
+    OKAY = "okay"
     NOT_TODAY = "not_today"
     TOO_HOT = "too_hot"
     TOO_COLD = "too_cold"

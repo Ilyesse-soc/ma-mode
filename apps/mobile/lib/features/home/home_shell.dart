@@ -153,8 +153,8 @@ class _CenterOutfitButton extends StatelessWidget {
   final VoidCallback onTap;
   @override
   Widget build(BuildContext context) => _NavItem(
-    icon: Icons.auto_awesome_outlined,
-    activeIcon: Icons.auto_awesome,
+    icon: Icons.dry_cleaning_outlined,
+    activeIcon: Icons.dry_cleaning,
     label: 'Outfit',
     selected: false,
     onTap: onTap,

@@ -6,8 +6,10 @@ import '../../core/models.dart';
 import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_widgets.dart';
+import '../../core/widgets/garment_card.dart';
 import '../home/home_screen.dart' show lastRecommendationProvider;
-import '../history/history_screen.dart' show savedOutfitsProvider;
+import '../history/history_screen.dart'
+    show savedOutfitsProvider, historyProvider;
 import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
 
@@ -42,7 +44,7 @@ class ExploreScreen extends ConsumerWidget {
                     )
                   : Card(
                       child: ListTile(
-                        leading: const Icon(Icons.auto_awesome),
+                        leading: const Icon(Icons.dry_cleaning_outlined),
                         title: Text(
                           reco.destinationLabel != null
                               ? 'Vers ${reco.destinationLabel}'
@@ -59,6 +61,13 @@ class ExploreScreen extends ConsumerWidget {
                     ),
             ),
             const SizedBox(height: AppTheme.spacingL),
+            const SectionTitle('Mes inspirations personnelles'),
+            const SizedBox(height: 8),
+            Text(
+              'Tes favoris et les looks que tu as vraiment portés.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 16),
             const SectionTitle('Mes tenues favorites'),
             ref
                 .watch(savedOutfitsProvider)
@@ -161,6 +170,48 @@ class ExploreScreen extends ConsumerWidget {
                   },
                 ),
             const SizedBox(height: AppTheme.spacingL),
+            const SectionTitle('Looks récents'),
+            const SizedBox(height: 8),
+            ref
+                .watch(historyProvider)
+                .when(
+                  loading: () => const AppSkeleton(height: 100),
+                  error: (_, _) => AppErrorView(
+                    message: 'Historique indisponible',
+                    onRetry: () => ref.invalidate(historyProvider),
+                  ),
+                  data: (entries) => Column(
+                    children: [
+                      if (entries.isEmpty)
+                        ListTile(
+                          title: const Text(
+                            'Ton histoire de style commence ici',
+                          ),
+                          subtitle: const Text(
+                            'Porte une première tenue pour la retrouver ici.',
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () => context.push('/outfit-flow'),
+                        ),
+                      for (final entry in entries.take(3))
+                        Card(
+                          child: ListTile(
+                            leading: const Icon(Icons.history),
+                            title: Text(entry.destinationLabel ?? 'Ma tenue'),
+                            subtitle: Text(
+                              '${entry.garmentCount} pièces · ${entry.wornAt.split('T').first}',
+                            ),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () => context.push(
+                              '/mannequin',
+                              extra: entry.garmentIds,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+            const SizedBox(height: 24),
             SectionTitle(
               'Garde-robe',
               trailing: TextButton(
@@ -181,74 +232,24 @@ class ExploreScreen extends ConsumerWidget {
                       ),
                     )
                   : SizedBox(
-                      height: 120,
+                      height: 215,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: garments.length,
                         separatorBuilder: (_, _) =>
                             const SizedBox(width: AppTheme.spacingS),
-                        itemBuilder: (context, i) =>
-                            _MiniGarmentCard(garment: garments[i]),
-                      ),
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MiniGarmentCard extends StatelessWidget {
-  const _MiniGarmentCard({required this.garment});
-
-  final Garment garment;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final imageUrl = garment.images.isNotEmpty
-        ? garment.images.first.downloadUrl
-        : null;
-    return InkWell(
-      onTap: () => context.push('/wardrobe/garment/${garment.id}'),
-      borderRadius: BorderRadius.circular(AppTheme.radiusM),
-      child: Container(
-        width: 100,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusM),
-          border: Border.all(color: theme.colorScheme.outline, width: 0.5),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(AppTheme.radiusM),
-                ),
-                child: imageUrl != null
-                    ? Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      )
-                    : Center(
-                        child: Text(
-                          garment.name.substring(0, 1).toUpperCase(),
-                          style: theme.textTheme.headlineSmall,
+                        itemBuilder: (context, i) => SizedBox(
+                          width: 160,
+                          child: GarmentCard(
+                            garment: garments[i],
+                            compact: true,
+                            onTap: () => context.push(
+                              '/wardrobe/garment/${garments[i].id}',
+                            ),
+                          ),
                         ),
                       ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: Text(
-                garment.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.labelSmall,
-              ),
+                    ),
             ),
           ],
         ),

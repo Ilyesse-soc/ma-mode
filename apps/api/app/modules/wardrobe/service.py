@@ -1,6 +1,7 @@
 """Wardrobe service: ownership-scoped CRUD (IDOR-safe) and identification flow."""
 
 import uuid
+from contextlib import suppress
 from datetime import UTC, datetime
 
 from sqlalchemy import func, select
@@ -156,6 +157,13 @@ async def confirm_candidate(
     if candidate is None:
         raise not_found("candidate")
     candidate.status = candidate.status.__class__.CONFIRMED
+    images = candidate.proposed.get("images", [])
+    if isinstance(images, list) and images and isinstance(images[0], str):
+        from app.core.errors import ApiError
+        from app.core.outbound import validate_public_url
+
+        with suppress(ApiError):
+            garment.product_image_url = validate_public_url(images[0], resolve=False)
     if apply_fields:
         proposed = candidate.proposed
         for field in ("name", "brand", "color", "reference", "material"):

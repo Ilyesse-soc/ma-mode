@@ -9,49 +9,12 @@ import '../../core/providers.dart';
 import '../../core/widgets/app_widgets.dart';
 import '../history/history_screen.dart';
 import 'mannequin_viewer.dart';
+import 'dressing_controller.dart';
+export 'dressing_controller.dart' show DressingSelection;
+import '../../core/widgets/garment_card.dart';
+import 'package:flutter/services.dart';
 
-enum MannequinPose { neutral }
-
-/// One selection per clothing slot; changing one piece preserves the others.
-class DressingSelection {
-  DressingSelection(Iterable<Garment> initial) {
-    for (final garment in initial) {
-      select(garment);
-    }
-  }
-  final Map<String, Garment> _items = {};
-  List<Garment> get items => _items.values.toList();
-  static const outerSlugs = {'jacket', 'blazer', 'coat', 'puffer', 'cardigan'};
-  static String slot(Garment garment) {
-    if (outerSlugs.contains(garment.category.slug)) return 'outer';
-    if (garment.category.group == 'head') {
-      if ({'glasses', 'sunglasses'}.contains(garment.category.slug)) {
-        return 'face';
-      }
-      if (garment.category.slug == 'earrings') return 'ears';
-      return 'head';
-    }
-    if (garment.category.group == 'other') return garment.category.slug;
-    return garment.category.group;
-  }
-
-  void select(Garment garment) {
-    if (garment.category.slug == 'dress') {
-      _items.remove('top');
-      _items.remove('bottom');
-    }
-    if (garment.category.group == 'top' &&
-        !outerSlugs.contains(garment.category.slug) &&
-        _items['bottom']?.category.slug == 'dress') {
-      _items.remove('bottom');
-    }
-    _items[slot(garment)] = garment;
-  }
-
-  void remove(String id) =>
-      _items.removeWhere((_, garment) => garment.id == id);
-  bool contains(String id) => _items.values.any((garment) => garment.id == id);
-}
+enum MannequinPose { neutral, relaxed, confident }
 
 class MannequinScreen extends ConsumerStatefulWidget {
   const MannequinScreen({super.key, this.initialGarmentIds = const []});
@@ -64,6 +27,7 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
   DressingSelection? _selection;
   String _filter = 'all';
   bool _saving = false;
+  Garment? _dragging;
   String? _error, _savedId;
   final _name = TextEditingController(text: 'Ma tenue');
   @override
@@ -179,84 +143,105 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
           final choices = items.where(matches).toList();
           final selected = _selection!.items;
           return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 28),
             children: [
               Text(
                 'Ton dressing personnel',
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              const SizedBox(height: 12),
-              Stack(
-                children: [
-                  MannequinViewer(
-                    presentation: presentation,
-                    garments: selected,
-                    height: 400,
-                  ),
-                  Positioned(
-                    right: 8,
-                    top: 46,
-                    child: Column(
-                      children: [
-                        for (final zone in const [
-                          ('head', 'Tête'),
-                          ('top', 'Hauts'),
-                          ('wrist', 'Poignets'),
-                          ('bottom', 'Bas'),
-                          ('shoes', 'Pieds'),
-                        ])
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                backgroundColor: Theme.of(
-                                  context,
-                                ).colorScheme.surface.withValues(alpha: 0.88),
-                              ),
-                              onPressed: () =>
-                                  setState(() => _filter = zone.$1),
-                              child: Text(zone.$2),
-                            ),
-                          ),
-                      ],
+              const SizedBox(height: 18),
+              LayoutBuilder(
+                builder: (context, constraints) => Stack(
+                  children: [
+                    MannequinViewer(
+                      presentation: presentation,
+                      garments: selected,
+                      height: 400,
                     ),
-                  ),
-                ],
+                    if (_dragging != null)
+                      for (final zone in DressingDropZone.values)
+                        Positioned.fromRect(
+                          rect: _zoneRect(zone, constraints.maxWidth, 400),
+                          child: DragTarget<Garment>(
+                            key: ValueKey('drop-${zone.name}'),
+                            onWillAcceptWithDetails: (details) =>
+                                !_saving && dropZoneFor(details.data) == zone,
+                            onAcceptWithDetails: (details) =>
+                                _apply(details.data, zone: zone),
+                            builder: (context, accepted, rejected) =>
+                                IgnorePointer(
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    decoration: BoxDecoration(
+                                      color: dropZoneFor(_dragging!) == zone
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.primary.withValues(
+                                              alpha: accepted.isEmpty
+                                                  ? .12
+                                                  : .3,
+                                            )
+                                          : Colors.transparent,
+                                      border: Border.all(
+                                        color: dropZoneFor(_dragging!) == zone
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.primary
+                                            : Colors.transparent,
+                                        width: 1.5,
+                                      ),
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                  ),
+                                ),
+                          ),
+                        ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 8),
-              const Text(
+              const SizedBox(height: 10),
+              Text(
+                'Appuie longuement sur une pièce et glisse-la sur le mannequin.',
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+              Text(
                 'Fais glisser pour tourner · Pince pour zoomer · Double-tap pour recentrer',
+                style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'Vue générique : catégorie et couleur de tes pièces, sans reproduction exacte de la coupe ou des motifs.',
-                textAlign: TextAlign.center,
-              ),
-              if (selected.isEmpty)
+              const SizedBox(height: 18),
+              if (selected.isNotEmpty) ...[
+                Text(
+                  'Tenue actuelle',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  children: selected
+                      .map(
+                        (g) => InputChip(
+                          label: Text(g.name),
+                          onDeleted: _saving
+                              ? null
+                              : () => setState(() {
+                                  _selection!.remove(g.id);
+                                  _savedId = null;
+                                }),
+                        ),
+                      )
+                      .toList(),
+                ),
+                const SizedBox(height: 18),
+              ] else
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 14),
                   child: Text(
-                    'Choisis une pièce de ta garde-robe pour commencer.',
+                    'Choisis ta première pièce pour habiller ton mannequin.',
                   ),
                 ),
-              Wrap(
-                spacing: 8,
-                children: selected
-                    .map(
-                      (g) => InputChip(
-                        label: Text(g.name),
-                        onDeleted: _saving
-                            ? null
-                            : () => setState(() {
-                                _selection!.remove(g.id);
-                                _savedId = null;
-                              }),
-                      ),
-                    )
-                    .toList(),
-              ),
-              const SizedBox(height: 12),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -274,13 +259,12 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
                       .toList(),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               if (choices.isEmpty) ...[
                 Text(
-                  'Aucun vêtement dans cette catégorie.',
+                  'Aucune pièce dans cette catégorie.',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 12),
                 FilledButton.icon(
                   onPressed: () => context.push(
                     '/wardrobe/add${addCategories.containsKey(_filter) ? '?category=${addCategories[_filter]}' : ''}',
@@ -290,89 +274,65 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
                 ),
               ] else
                 SizedBox(
-                  height: 155,
+                  height: 200,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: choices.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 10),
+                    separatorBuilder: (_, _) => const SizedBox(width: 12),
                     itemBuilder: (_, index) {
                       final garment = choices[index];
-                      final active = _selection!.contains(garment.id);
-                      return Semantics(
-                        button: true,
-                        selected: active,
-                        label: 'Choisir ${garment.name}',
-                        child: InkWell(
-                          onTap: _saving
-                              ? null
-                              : () => setState(() {
-                                  _selection!.select(garment);
-                                  _savedId = null;
-                                }),
-                          borderRadius: BorderRadius.circular(14),
-                          child: Container(
-                            width: 126,
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.surfaceContainerHighest,
-                              border: Border.all(
-                                color: active
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.outline,
-                                width: active ? 2 : 1,
-                              ),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child:
-                                      garment.images.isNotEmpty &&
-                                          garment.images.first.downloadUrl !=
-                                              null
-                                      ? Image.network(
-                                          garment.images.first.downloadUrl!,
-                                          fit: BoxFit.contain,
-                                          errorBuilder: (_, _, _) => const Icon(
-                                            Icons.checkroom_outlined,
-                                            size: 42,
-                                          ),
-                                        )
-                                      : Icon(
-                                          garment.category.group == 'shoes'
-                                              ? Icons.ice_skating_outlined
-                                              : Icons.checkroom_outlined,
-                                          size: 42,
-                                        ),
-                                ),
-                                Text(
-                                  garment.name,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.labelLarge,
-                                ),
-                                Text(
-                                  '${garment.color}${active ? ' · Choisi' : ''}',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                      final card = SizedBox(
+                        width: 125,
+                        child: GarmentCard(
+                          garment: garment,
+                          selected: _selection!.contains(garment.id),
+                          compact: true,
+                          onTap: _saving ? null : () => _choose(garment),
+                        ),
+                      );
+                      return LongPressDraggable<Garment>(
+                        data: garment,
+                        maxSimultaneousDrags: _saving ? 0 : 1,
+                        onDragStarted: () {
+                          HapticFeedback.selectionClick();
+                          setState(() => _dragging = garment);
+                        },
+                        onDragEnd: (_) {
+                          if (mounted) setState(() => _dragging = null);
+                        },
+                        feedback: Material(
+                          color: Colors.transparent,
+                          elevation: 12,
+                          borderRadius: BorderRadius.circular(16),
+                          child: SizedBox(
+                            width: 135,
+                            height: 195,
+                            child: GarmentCard(
+                              garment: garment,
+                              onTap: null,
+                              compact: true,
                             ),
                           ),
                         ),
+                        childWhenDragging: Opacity(opacity: .35, child: card),
+                        child: card,
                       );
                     },
                   ),
                 ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 14),
+              const SizedBox(height: 14),
+              Text(
+                'Représentation générique de tes pièces : leur catégorie et leur couleur. Les coupes et motifs exacts ne sont pas reproduits.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               if (_error != null)
                 Text(
                   _error!,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               if (selected.isNotEmpty) ...[
+                const SizedBox(height: 20),
                 TextField(
                   controller: _name,
                   maxLength: 120,
@@ -403,6 +363,66 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
           );
         },
       ),
+    );
+  }
+
+  void _apply(Garment garment, {DressingDropZone? zone}) {
+    if (_saving || _selection == null) return;
+    setState(() {
+      if (zone == null) {
+        _selection!.select(garment);
+      } else {
+        _selection!.drop(garment, zone);
+      }
+      _savedId = null;
+    });
+    HapticFeedback.lightImpact();
+  }
+
+  Future<void> _choose(Garment garment) async {
+    final accepted = await showModalBottomSheet<bool>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(garment.name, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              FilledButton.icon(
+                onPressed: () => Navigator.pop(context, true),
+                icon: const Icon(Icons.accessibility_new),
+                label: const Text('Porter sur mannequin'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Annuler'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (mounted && accepted == true) _apply(garment);
+  }
+
+  static Rect _zoneRect(DressingDropZone zone, double width, double height) {
+    final bounds = switch (zone) {
+      DressingDropZone.head => const Rect.fromLTWH(.38, .05, .24, .20),
+      DressingDropZone.torso => const Rect.fromLTWH(.28, .25, .44, .25),
+      DressingDropZone.wrists => const Rect.fromLTWH(.18, .50, .64, .08),
+      DressingDropZone.waist => const Rect.fromLTWH(.32, .58, .36, .08),
+      DressingDropZone.legs => const Rect.fromLTWH(.32, .66, .36, .20),
+      DressingDropZone.feet => const Rect.fromLTWH(.29, .86, .42, .12),
+    };
+    return Rect.fromLTWH(
+      bounds.left * width,
+      bounds.top * height,
+      bounds.width * width,
+      bounds.height * height,
     );
   }
 }

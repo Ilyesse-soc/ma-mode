@@ -67,6 +67,7 @@ class RecommendationFeedback(Base):
         sa.Enum(FeedbackAction, name="feedback_action"), nullable=False
     )
     garment_id: Mapped[uuid.UUID | None] = mapped_column(sa.Uuid(as_uuid=True))
+    reason: Mapped[str | None] = mapped_column(sa.String(32))
     created_at: Mapped[object] = mapped_column(
         sa.DateTime(timezone=True), default=utcnow, server_default=sa.func.now(), nullable=False
     )

@@ -183,12 +183,11 @@ class _BarcodeScanScreenState extends State<BarcodeScanScreen> {
             ),
           ),
           Center(
-            child: Container(
-              width: 260,
-              height: 160,
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFF57C4DC), width: 2),
-                borderRadius: BorderRadius.circular(16),
+            child: IgnorePointer(
+              child: SizedBox(
+                width: MediaQuery.sizeOf(context).width * .7,
+                height: MediaQuery.sizeOf(context).width * .7 / 1.6,
+                child: const CustomPaint(painter: _ScanCorners()),
               ),
             ),
           ),
@@ -206,7 +205,7 @@ class _BarcodeScanScreenState extends State<BarcodeScanScreen> {
                       child: Text(_error!, textAlign: TextAlign.center),
                     ),
                   const Text(
-                    'Cadre le code-barres de l\'étiquette',
+                    'Place le code-barres dans le cadre',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -236,4 +235,36 @@ class _BarcodeScanScreenState extends State<BarcodeScanScreen> {
       ),
     );
   }
+}
+
+class _ScanCorners extends CustomPainter {
+  const _ScanCorners();
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFF57C4DC)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    const length = 24.0;
+    for (final corner in [
+      Offset.zero,
+      Offset(size.width, 0),
+      Offset(0, size.height),
+      Offset(size.width, size.height),
+    ]) {
+      final dx = corner.dx == 0 ? length : -length;
+      final dy = corner.dy == 0 ? length : -length;
+      canvas.drawPath(
+        Path()
+          ..moveTo(corner.dx + dx, corner.dy)
+          ..lineTo(corner.dx, corner.dy)
+          ..lineTo(corner.dx, corner.dy + dy),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_ScanCorners oldDelegate) => false;
 }

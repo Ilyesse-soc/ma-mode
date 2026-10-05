@@ -67,6 +67,7 @@ class Garment(Base, TimestampMixin):
         nullable=False,
     )
     asset_key: Mapped[str | None] = mapped_column(sa.String(255))  # 3D asset lookup key
+    product_image_url: Mapped[str | None] = mapped_column(sa.String(2048))
     is_archived: Mapped[bool] = mapped_column(sa.Boolean, default=False, nullable=False)
     last_worn_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True))
 
@@ -92,6 +93,7 @@ class GarmentImage(Base, TimestampMixin):
     width: Mapped[int | None] = mapped_column(sa.Integer)
     height: Mapped[int | None] = mapped_column(sa.Integer)
     is_primary: Mapped[bool] = mapped_column(sa.Boolean, default=False, nullable=False)
+    image_kind: Mapped[str] = mapped_column(sa.String(16), default="garment", nullable=False)
 
     garment: Mapped[Garment] = relationship(back_populates="images")
 

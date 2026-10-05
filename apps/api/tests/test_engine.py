@@ -66,6 +66,26 @@ def test_heat_avoids_heavy_layer():
     assert "j1" not in top.garment_ids
 
 
+def test_cold_rain_can_layer_a_sweater_under_the_waterproof_jacket():
+    outfit = recommend(_wardrobe(), _ctx(5, 5, rain=0.9))[0]
+    assert "s1" in outfit.garment_ids
+    assert "j1" in outfit.garment_ids
+    assert "b2" not in outfit.garment_ids
+
+
+def test_heat_prefers_shorts_over_equally_available_jeans():
+    outfit = recommend(_wardrobe(), _ctx(25, 29))[0]
+    assert "b2" in outfit.garment_ids
+
+
+def test_work_prefers_an_owned_polo_over_a_casual_tshirt():
+    context = _ctx(18, 18)
+    context.activity = "work"
+    result = recommend(_wardrobe(), context)[0]
+    assert "t2" in result.garment_ids
+    assert "t1" not in result.garment_ids
+
+
 def test_recently_worn_outfit_not_reproposed():
     ctx = _ctx(temp_min=15.0, temp_max=20.0)
     first = recommend(_wardrobe(), ctx)

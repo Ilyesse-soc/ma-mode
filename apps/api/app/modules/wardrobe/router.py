@@ -3,7 +3,8 @@
 import uuid
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import select
+from pydantic import Field
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.concurrency import run_in_threadpool
 
@@ -19,7 +20,7 @@ from app.modules.users.dependencies import get_current_user
 from app.modules.users.models import User
 from app.modules.wardrobe import service
 from app.modules.wardrobe.catalog import SILHOUETTE_ZONE_MAP
-from app.modules.wardrobe.models import GarmentImage
+from app.modules.wardrobe.models import GarmentIdentificationCandidate, GarmentImage
 from app.modules.wardrobe.schemas import (
     CandidateOut,
     CategoryOut,
@@ -33,6 +34,7 @@ from app.modules.wardrobe.schemas import (
     IdentifyLabelIn,
     IdentifyPhotoIn,
     IdentifyResult,
+    RefineIdentificationIn,
 )
 
 router = APIRouter(tags=["wardrobe"])
@@ -129,6 +131,7 @@ class AttachImagePayload(StrictModel):
     byte_size: int
     width: int | None = None
     height: int | None = None
+    image_kind: str = Field(default="garment", pattern=r"^(garment|label)$")
 
 
 @router.post("/garments/{garment_id}/images", response_model=GarmentImageOut, status_code=201)
@@ -174,6 +177,14 @@ async def attach_image(
     )
     if old_key != upload.object_key:
         db.add(DeletionTask(prefix=old_key, not_before=utc_now()))
+    image.image_kind = payload.image_kind
+    if payload.image_kind == "garment":
+        await db.execute(
+            update(GarmentImage)
+            .where(GarmentImage.garment_id == garment_id, GarmentImage.id != image.id)
+            .values(is_primary=False)
+        )
+        image.is_primary = True
     await db.commit()
     out = GarmentImageOut.model_validate(image)
     out.download_url = storage.create_presigned_download(image.object_key)
@@ -193,53 +204,62 @@ async def identify_barcode(
     from app.modules.product_search.cache import barcode_candidates
     from app.modules.product_search.providers import get_product_search_providers
 
+    if payload.garment_id:
+        await service.get_garment(db, current.id, payload.garment_id)
     cached = await barcode_candidates(db, current.id, payload.barcode)
     for provider in get_product_search_providers():
         results = cached or await provider.search_by_barcode(payload.barcode)
         if results:
             best = results[0]
-            garment = await service.create_garment(
-                db,
-                current.id,
-                GarmentCreate(
-                    category_slug="top_other",
-                    name=best.name or "Article scanné",
-                    brand=best.brand,
-                    color=best.color or "unknown",
-                    reference=best.reference,
-                    barcode=payload.barcode,
-                    is_archived=True,
-                ),
+            garment = (
+                await service.get_garment(db, current.id, payload.garment_id)
+                if payload.garment_id
+                else await service.create_garment(
+                    db,
+                    current.id,
+                    GarmentCreate(
+                        category_slug="top_other",
+                        name=best.name or "Article scanné",
+                        brand=best.brand,
+                        color=best.color or "unknown",
+                        reference=best.reference,
+                        barcode=payload.barcode,
+                        is_archived=True,
+                    ),
+                )
             )
-            candidate = await service.add_candidate(
-                db,
-                garment.id,
-                source=IdentificationSource.BARCODE,
-                confidence=best.confidence,
-                proposed={
-                    "name": best.name,
-                    "brand": best.brand,
-                    "reference": best.reference,
-                    "color": best.color,
-                    "category_hint": best.category_hint,
-                    "ean": best.ean,
-                    "upc": best.upc,
-                    "gtin": best.gtin,
-                    "images": best.images,
-                },
-            )
+            garment.barcode = payload.barcode
+            from app.modules.product_recognition.identification import match_score, result_for
+
+            for hit in results[:5]:
+                score, matched_fields = match_score({"barcode": payload.barcode}, hit)
+                proposed = hit.model_dump(exclude_none=True)
+                proposed.update(
+                    provider=hit.source, matched_fields=matched_fields, confidence_kind="evidence_match"
+                )
+                await service.add_candidate(db, garment.id, IdentificationSource.BARCODE, score, proposed)
             await db.commit()
-            return IdentifyResult(
-                garment_id=garment.id,
-                status="candidates",
-                candidates=[CandidateOut.model_validate(candidate)],
-                message="Nous pensons avoir trouvé ce produit — confirme les détails",
-            )
-    return IdentifyResult(
-        status="not_found",
-        candidates=[],
-        message="Code-barres inconnu — renseigne le vêtement manuellement",
+            return await result_for(db, current.id, garment.id)
+    from app.modules.product_recognition.identification import result_for
+
+    garment = (
+        await service.get_garment(db, current.id, payload.garment_id)
+        if payload.garment_id
+        else await service.create_garment(
+            db,
+            current.id,
+            GarmentCreate(
+                category_slug="top_other",
+                name="Article à identifier",
+                color="unknown",
+                barcode=payload.barcode,
+                is_archived=True,
+            ),
+        )
     )
+    garment.barcode = payload.barcode
+    await db.commit()
+    return await result_for(db, current.id, garment.id)
 
 
 @router.post("/garments/{garment_id}/identify/label", response_model=IdentifyResult)
@@ -253,6 +273,35 @@ async def identify_label(
 
     await require_ai_consent(db, current.id)
     result = await pipeline.analyze_label(db, current.id, garment_id, payload.image_id)
+    await db.commit()
+    return result
+
+
+@router.get("/garments/{garment_id}/identification", response_model=IdentifyResult)
+async def identification_state(
+    garment_id: uuid.UUID, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)
+):
+    from app.modules.product_recognition.identification import result_for
+
+    return await result_for(db, current.id, garment_id)
+
+
+@router.post("/garments/{garment_id}/identify/refine", response_model=IdentifyResult)
+async def refine_identification(
+    garment_id: uuid.UUID,
+    payload: RefineIdentificationIn,
+    db: AsyncSession = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    from app.modules.product_recognition.identification import search_evidence
+
+    await service.get_garment(db, current.id, garment_id)
+    proposed = {k: v.strip() for k, v in payload.model_dump(exclude_none=True).items() if v.strip()}
+    if proposed:
+        await service.add_candidate(
+            db, garment_id, IdentificationSource.MANUAL, 0, {**proposed, "confidence_kind": "user_input"}
+        )
+    result = await search_evidence(db, current.id, garment_id)
     await db.commit()
     return result
 
@@ -283,5 +332,29 @@ async def confirm_candidate(
     candidate = await service.confirm_candidate(
         db, current.id, garment_id, candidate_id, payload.apply_fields
     )
+    await db.commit()
+    return candidate
+
+
+@router.post("/garments/{garment_id}/candidates/{candidate_id}/reject", response_model=CandidateOut)
+async def reject_candidate(
+    garment_id: uuid.UUID,
+    candidate_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    await service.get_garment(db, current.id, garment_id)
+    candidate = await db.scalar(
+        select(GarmentIdentificationCandidate).where(
+            GarmentIdentificationCandidate.id == candidate_id,
+            GarmentIdentificationCandidate.garment_id == garment_id,
+        )
+    )
+    if candidate is None:
+        raise not_found("candidate")
+    candidate.status = candidate.status.__class__.REJECTED
+    garment = await service.get_garment(db, current.id, garment_id)
+    if garment.product_image_url in candidate.proposed.get("images", []):
+        garment.product_image_url = None
     await db.commit()
     return candidate

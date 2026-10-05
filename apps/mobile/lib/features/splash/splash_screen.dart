@@ -98,7 +98,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           'Dressly',
                           style: theme.textTheme.displayMedium?.copyWith(
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Inter',
+                            fontFamily: 'PlayfairDisplay',
                             fontSize: 52,
                             height: 1.1,
                             color: Colors.white,

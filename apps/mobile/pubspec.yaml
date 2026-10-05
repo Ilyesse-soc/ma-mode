@@ -50,10 +50,14 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
+    - family: PlayfairDisplay
+      fonts:
+        - asset: assets/fonts/PlayfairDisplay.ttf
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter.ttf
   assets:
+    - assets/fonts/PlayfairDisplay-OFL.txt
     - assets/fonts/OFL.txt
     - assets/legal/
     - assets/3d/mannequins/

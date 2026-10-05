@@ -18,7 +18,7 @@ from app.modules.product_recognition.providers import GarmentVisualAnalysis, Lab
 from app.modules.product_search.providers import get_product_search_providers
 from app.modules.wardrobe import service as wardrobe_service
 from app.modules.wardrobe.models import GarmentIdentificationCandidate
-from app.modules.wardrobe.schemas import CandidateOut, IdentifyResult
+from app.modules.wardrobe.schemas import IdentifyResult
 
 HIGH_CONFIDENCE = 0.85
 LOW_CONFIDENCE = 0.5
@@ -72,15 +72,19 @@ async def analyze_label(
                 # available when the FREE catalogue quota or network is exhausted.
                 hits = []
             for hit in hits:
+                from app.modules.product_recognition.identification import match_score
+
+                score, matched = match_score(proposed, hit)
                 c = await wardrobe_service.add_candidate(
                     db,
                     garment_id,
                     IdentificationSource.LABEL_OCR,
-                    confidence=min(confidence, hit.confidence),
+                    confidence=score,
                     proposed={
-                        "name": hit.name,
-                        "brand": hit.brand,
-                        "reference": hit.reference,
+                        **hit.model_dump(exclude_none=True),
+                        "provider": hit.source,
+                        "matched_fields": matched,
+                        "confidence_kind": "evidence_match",
                     },
                 )
                 candidates_out.append(c)
@@ -93,9 +97,11 @@ async def analyze_label(
         status, message = "candidates", "Nous pensons avoir trouvé ce produit"
     else:
         status, message = "not_found", "Confiance insuffisante — merci de compléter"
-    return IdentifyResult(
-        status=status, candidates=[CandidateOut.model_validate(c) for c in candidates_out], message=message
-    )
+    from app.modules.product_recognition.identification import result_for
+
+    enriched = await result_for(db, user_id, garment_id)
+    enriched.status, enriched.message = status, message
+    return enriched
 
 
 async def analyze_photo(
@@ -118,10 +124,13 @@ async def analyze_photo(
             "secondary_colors": analysis.secondary_colors,
             "material": analysis.material_guess,
             "styles": analysis.style_hints,
+            "brand": analysis.brand,
+            "name": analysis.product_name,
+            "reference": analysis.reference,
         }.items()
         if v
     }
-    candidate = await wardrobe_service.add_candidate(
+    await wardrobe_service.add_candidate(
         db,
         garment_id,
         IdentificationSource.PHOTO_VISION,
@@ -132,4 +141,8 @@ async def analyze_photo(
         status, message = "candidates", "Analyse terminée — confirme les détails"
     else:
         status, message = "not_found", "Analyse incertaine — complète manuellement"
-    return IdentifyResult(status=status, candidates=[CandidateOut.model_validate(candidate)], message=message)
+    from app.modules.product_recognition.identification import search_evidence
+
+    enriched = await search_evidence(db, user_id, garment_id)
+    enriched.status, enriched.message = status, message
+    return enriched

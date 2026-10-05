@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 /// Design system — direction visuelle maquette : sombre premium, mode/lifestyle.
 class AppColors {
   static const Color background = Color(0xFF0B0B0C);
-  static const Color surface = Color(0xFF191A1B);
-  static const Color surfaceElevated = Color(0xFF232426);
+  static const Color surface = Color(0xFF151517);
+  static const Color surfaceElevated = Color(0xFF1C1C1F);
   static const Color border = Color(0xFF29292D);
   static const Color primaryText = Color(0xFFF5F2EA);
   static const Color secondaryText = Color(0xFFA7A5A0);
@@ -48,18 +48,21 @@ class AppTheme {
         .apply(bodyColor: color, displayColor: color)
         .copyWith(
           displayLarge: themed.displayLarge?.copyWith(
+            fontFamily: 'PlayfairDisplay',
             fontSize: 48,
             fontWeight: FontWeight.w600,
             letterSpacing: -1.2,
             color: color,
           ),
           displayMedium: themed.displayMedium?.copyWith(
+            fontFamily: 'PlayfairDisplay',
             fontSize: 40,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.8,
             color: color,
           ),
           displaySmall: themed.displaySmall?.copyWith(
+            fontFamily: 'PlayfairDisplay',
             fontSize: 32,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.6,

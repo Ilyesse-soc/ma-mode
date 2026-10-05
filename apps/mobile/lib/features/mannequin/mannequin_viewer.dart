@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import '../../core/models.dart';
 import 'outfit_composer.dart';
+import '../onboarding/onboarding_page.dart';
 
 Uint8List _composeOutfit(Map<String, dynamic> message) =>
     OutfitComposer.compose(
@@ -177,6 +179,22 @@ class _MannequinViewerState extends State<MannequinViewer> {
         ),
         child: Stack(
           children: [
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Opacity(
+                  opacity: .32,
+                  child: Image.asset(
+                    IntroAssets.pages.first.image,
+                    bundle: rootBundle,
+                    fit: BoxFit.cover,
+                    excludeFromSemantics: true,
+                    cacheWidth: 600,
+                    errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                  ),
+                ),
+              ),
+            ),
             const Positioned.fill(
               child: CustomPaint(painter: _DressingPainter()),
             ),

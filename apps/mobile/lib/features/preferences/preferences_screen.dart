@@ -118,6 +118,7 @@ class _PreferencesScreenState extends ConsumerState<PreferencesScreen> {
       }
       return;
     }
+    if (!await _completeStep()) return;
     if (mounted) {
       if (widget.fromRegister ||
           GoRouterState.of(context).uri.queryParameters['from'] == 'register') {
@@ -125,6 +126,44 @@ class _PreferencesScreenState extends ConsumerState<PreferencesScreen> {
       } else {
         context.pop();
       }
+    }
+  }
+
+  Future<bool> _completeStep() async {
+    if (ref
+            .read(authControllerProvider)
+            .user
+            ?.onboardingSteps
+            .contains('preferences') ==
+        true) {
+      return true;
+    }
+    try {
+      await ref
+          .read(authControllerProvider.notifier)
+          .completeOnboardingStep('preferences');
+      return mounted;
+    } on ApiException catch (e) {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _error = e.message;
+        });
+      }
+      return false;
+    }
+  }
+
+  Future<void> _skip() async {
+    setState(() => _busy = true);
+    if (!await _completeStep() || !mounted) return;
+    final fromRegister =
+        widget.fromRegister ||
+        GoRouterState.of(context).uri.queryParameters['from'] == 'register';
+    if (fromRegister) {
+      context.go('/');
+    } else {
+      context.pop();
     }
   }
 
@@ -137,7 +176,7 @@ class _PreferencesScreenState extends ConsumerState<PreferencesScreen> {
         child: !_loaded
             ? const Center(child: CircularProgressIndicator())
             : ListView(
-                padding: const EdgeInsets.all(AppTheme.spacingL),
+                padding: const EdgeInsets.all(AppTheme.spacingM),
                 children: [
                   if (!_loadSucceeded) ...[
                     Text(
@@ -260,10 +299,13 @@ class _PreferencesScreenState extends ConsumerState<PreferencesScreen> {
                                     },
                                   ),
                                   child: _likedColors.contains(c.$2)
-                                      ? const Icon(
+                                      ? Icon(
                                           Icons.check,
                                           size: 18,
-                                          color: Colors.white,
+                                          color:
+                                              c.$2 == 'white' || c.$2 == 'beige'
+                                              ? Colors.black
+                                              : Colors.white,
                                         )
                                       : null,
                                 ),
@@ -287,17 +329,7 @@ class _PreferencesScreenState extends ConsumerState<PreferencesScreen> {
                     child: const Text('Sauvegarder'),
                   ),
                   TextButton(
-                    onPressed: _busy
-                        ? null
-                        : () {
-                            final fromRegister =
-                                widget.fromRegister ||
-                                GoRouterState.of(
-                                      context,
-                                    ).uri.queryParameters['from'] ==
-                                    'register';
-                            fromRegister ? context.go('/') : context.pop();
-                          },
+                    onPressed: _busy ? null : _skip,
                     child: const Text('Passer'),
                   ),
                 ],

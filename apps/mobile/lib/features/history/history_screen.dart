@@ -7,6 +7,7 @@ import '../../core/network/api_client.dart';
 import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_widgets.dart';
+import '../../core/widgets/garment_card.dart';
 
 class _HistoryEntry {
   const _HistoryEntry({
@@ -17,6 +18,7 @@ class _HistoryEntry {
     this.garmentCount = 0,
     this.outfitId,
     this.garmentIds = const [],
+    this.weather,
   });
 
   final String wornAt;
@@ -26,6 +28,7 @@ class _HistoryEntry {
   final int garmentCount;
   final String? outfitId;
   final List<String> garmentIds;
+  final Map<String, dynamic>? weather;
 }
 
 final savedOutfitsProvider = FutureProvider<List<Map<String, dynamic>>>((
@@ -59,6 +62,9 @@ final historyProvider = FutureProvider<List<_HistoryEntry>>((ref) async {
             garmentCount: (e['garment_ids'] as List?)?.length ?? 0,
             garmentIds: (e['garment_ids'] as List?)?.cast<String>() ?? const [],
             outfitId: e['outfit_id'] as String?,
+            weather: e['weather'] == null
+                ? null
+                : Map<String, dynamic>.from(e['weather'] as Map),
           ),
         )
         .toList();
@@ -75,6 +81,7 @@ class HistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final history = ref.watch(historyProvider);
     final outfits = ref.watch(savedOutfitsProvider);
+    final wardrobe = ref.watch(wardrobeProvider).valueOrNull ?? [];
     return Scaffold(
       appBar: AppBar(title: const Text('Historique')),
       body: SafeArea(
@@ -105,6 +112,10 @@ class HistoryScreen extends ConsumerWidget {
                       const SizedBox(height: AppTheme.spacingS),
                   itemBuilder: (context, i) {
                     final entry = entries[i];
+                    final pieces = wardrobe
+                        .where((g) => entry.garmentIds.contains(g.id))
+                        .take(4)
+                        .toList();
                     final favorite =
                         outfits.valueOrNull
                             ?.where((o) => o['id'] == entry.outfitId)
@@ -194,19 +205,32 @@ class HistoryScreen extends ConsumerWidget {
                                   }
                                 },
                               ),
-                        leading: Icon(
-                          entry.feedback == 'like'
-                              ? Icons.favorite
-                              : Icons.checkroom_outlined,
-                          color: entry.feedback == 'like'
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.secondary,
+                        minTileHeight: 88,
+                        leading: SizedBox(
+                          width: 64,
+                          height: 64,
+                          child: pieces.isEmpty
+                              ? const Icon(Icons.checkroom_outlined)
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: GridView.count(
+                                    crossAxisCount: pieces.length == 1 ? 1 : 2,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    children: [
+                                      for (final piece in pieces)
+                                        GarmentVisual(garment: piece),
+                                    ],
+                                  ),
+                                ),
                         ),
-                        title: Text(_formatDate(entry.wornAt)),
+                        title: Text(
+                          '${_formatDate(entry.wornAt)}${entry.destinationLabel == null ? '' : ' · ${entry.destinationLabel}'}',
+                        ),
                         subtitle: Text(
                           [
-                            if (entry.destinationLabel != null)
-                              entry.destinationLabel!,
+                            if (entry.weather != null)
+                              '${(entry.weather!['temperature_c'] as num?)?.round() ?? '?'} °C · ${_condition(entry.weather!['condition'] as String?)}',
                             if (entry.activity != null)
                               _activityLabel(entry.activity!),
                             '${entry.garmentCount} pièces',
@@ -240,6 +264,15 @@ class HistoryScreen extends ConsumerWidget {
     ];
     return '${dt.day} ${months[dt.month - 1]}';
   }
+
+  static String _condition(String? value) => switch (value) {
+    'rain' => 'Pluie',
+    'clear' => 'Ciel dégagé',
+    'cloudy' => 'Nuageux',
+    'snow' => 'Neige',
+    'fog' => 'Brouillard',
+    _ => 'Météo enregistrée',
+  };
 
   static String _activityLabel(String activity) => switch (activity) {
     'work' => 'Travail',

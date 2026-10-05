@@ -65,15 +65,11 @@
     },
     {
       "flow": "live external AI photo",
-      "passed": true,
-      "http_status": 200,
-      "identification_status": "candidates",
-      "candidates": 1,
-      "error_code": null
-    },
-    {
-      "flow": "user confirms photo candidate",
-      "passed": true
+      "passed": false,
+      "http_status": 503,
+      "identification_status": null,
+      "candidates": 0,
+      "error_code": "provider_unavailable"
     },
     {
       "flow": "live IGN/BAN Poissy / Yvelines",

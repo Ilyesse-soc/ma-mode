@@ -71,6 +71,7 @@ class GarmentImageOut(StrictModel):
     width: int | None
     height: int | None
     is_primary: bool
+    image_kind: str = "garment"
     download_url: str | None = None  # presigned, injected at serialization
 
 
@@ -99,6 +100,7 @@ class GarmentOut(StrictModel):
     created_at: datetime
     category: CategoryOut
     images: list[GarmentImageOut] = Field(default_factory=list)
+    product_image_url: str | None = None
 
 
 class GarmentPage(StrictModel):
@@ -122,6 +124,7 @@ class CandidateOut(StrictModel):
 
 class IdentifyBarcodeIn(StrictModel):
     barcode: str = Field(min_length=6, max_length=32, pattern=r"^[0-9A-Za-z\-]+$")
+    garment_id: uuid.UUID | None = None
 
 
 class IdentifyLabelIn(StrictModel):
@@ -137,6 +140,18 @@ class IdentifyResult(StrictModel):
     status: str  # "matched" | "candidates" | "not_found"
     candidates: list[CandidateOut] = Field(default_factory=list)
     message: str
+    missing_fields: list[str] = Field(default_factory=list)
+    recommended_actions: list[str] = Field(default_factory=list)
+    evidence: dict = Field(default_factory=dict)
+    confidence_kind: str = "model_estimate"
+
+
+class RefineIdentificationIn(StrictModel):
+    brand: str | None = Field(default=None, max_length=120)
+    reference: str | None = Field(default=None, max_length=160)
+    color: str | None = Field(default=None, max_length=60)
+    name: str | None = Field(default=None, max_length=160)
+    category_slug: str | None = Field(default=None, max_length=64)
 
 
 class ConfirmCandidateIn(StrictModel):

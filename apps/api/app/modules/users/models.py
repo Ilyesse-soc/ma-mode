@@ -22,6 +22,7 @@ class User(Base, TimestampMixin):
         sa.Enum(MannequinPresentation, name="mannequin_presentation"), nullable=False
     )
     email_verified: Mapped[bool] = mapped_column(sa.Boolean, default=False, nullable=False)
+    onboarding_steps: Mapped[list] = mapped_column(sa.JSON, default=lambda: ["profile"], nullable=False)
     email_verification_token_hash: Mapped[str | None] = mapped_column(sa.String(64))
     email_verification_expires_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True))
     password_reset_token_hash: Mapped[str | None] = mapped_column(sa.String(64))

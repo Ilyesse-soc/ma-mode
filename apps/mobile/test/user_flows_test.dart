@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'mannequin_viewer_test.dart' show MissingModelBundle;
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -128,12 +129,18 @@ Future<void> pumpScreen(
     ProviderScope(
       overrides: [
         apiClientProvider.overrideWithValue(api),
+        tokenStorageProvider.overrideWithValue(MemoryTokens(active: false)),
         locationControllerProvider.overrideWith(ManualLocation.new),
         wardrobeProvider.overrideWith(
           (ref) async => [Garment.fromJson(garmentJson)],
         ),
       ],
-      child: MaterialApp.router(theme: AppTheme.dark(), routerConfig: router),
+      // Widget tests have no native WebView. Exercise the explicit unavailable
+      // renderer state; binary composition and browser tests cover real 3D.
+      child: DefaultAssetBundle(
+        bundle: MissingModelBundle(),
+        child: MaterialApp.router(theme: AppTheme.dark(), routerConfig: router),
+      ),
     ),
   );
   await tester.pumpAndSettle();
@@ -155,6 +162,43 @@ void main() {
   tearDownAll(() async {
     await Hive.close();
     await cache.delete(recursive: true);
+  });
+
+  testWidgets('detail edits season inline and sends only the changed field', (
+    tester,
+  ) async {
+    var response = Map<String, dynamic>.from(garmentJson);
+    final adapter = ContractAdapter((request) {
+      if (request.method == 'PATCH') {
+        response = {
+          ...response,
+          ...Map<String, dynamic>.from(request.data as Map),
+        };
+      }
+      return (200, response);
+    });
+    await pumpScreen(
+      tester,
+      const GarmentDetailScreen(garmentId: 'g1'),
+      adapter,
+    );
+    final season = find.widgetWithText(ChoiceChip, 'Été');
+    await tester.scrollUntilVisible(season, 200);
+    await tester.ensureVisible(season);
+    await tester.pumpAndSettle();
+    await tester.tap(season);
+    final save = find.widgetWithText(FilledButton, 'Enregistrer');
+    await tester.scrollUntilVisible(save, 180);
+    await tester.ensureVisible(save);
+    await tester.pumpAndSettle();
+    await tester.tap(save);
+    await tester.pumpAndSettle();
+    final patches = adapter.calls
+        .where((request) => request.method == 'PATCH')
+        .toList();
+    expect(patches.single.path, '/garments/g1');
+    expect(patches.single.data, {'season': 'summer'});
+    expect(find.text('Vêtement enregistré'), findsOneWidget);
   });
 
   test('cached garment keeps photos and editable fields', () {
@@ -191,6 +235,7 @@ void main() {
         'Bearer test-access',
       );
       expect(find.text('Hoodie gris'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('coton'), 180);
       expect(find.text('coton'), findsOneWidget);
     },
   );
@@ -429,7 +474,13 @@ void main() {
     );
     await tester.tap(find.text('Donner mon avis'));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Valider'), 200);
+    await tester.scrollUntilVisible(
+      find.text('Valider'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.ensureVisible(find.widgetWithText(FilledButton, 'Valider'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Valider'));
     await tester.pumpAndSettle();
     expect(find.text('Retour non enregistré'), findsOneWidget);

@@ -47,6 +47,7 @@ class HistoryOut(StrictModel):
     activity: str | None
     feedback: str | None
     garment_ids: list
+    weather: dict | None = None
 
 
 def _to_out(outfit: Outfit) -> OutfitOut:
@@ -224,11 +225,28 @@ async def stats_summary(db: AsyncSession = Depends(get_db), current: User = Depe
 
 @router.get("/outfits/history/recent", response_model=list[HistoryOut])
 async def recent_history(db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
-    result = await db.scalars(
-        select(OutfitHistory)
-        .where(OutfitHistory.user_id == current.id)
-        .order_by(OutfitHistory.worn_at.desc())
-        .limit(50)
+    from app.modules.weather.router import WeatherSnapshot
+
+    result = list(
+        await db.scalars(
+            select(OutfitHistory)
+            .where(OutfitHistory.user_id == current.id)
+            .order_by(OutfitHistory.worn_at.desc())
+            .limit(50)
+        )
+    )
+    snapshot_ids = [h.weather_snapshot_id for h in result if h.weather_snapshot_id is not None]
+    snapshots = (
+        {
+            s.id: s.payload.get("current")
+            for s in await db.scalars(
+                select(WeatherSnapshot).where(
+                    WeatherSnapshot.user_id == current.id, WeatherSnapshot.id.in_(snapshot_ids)
+                )
+            )
+        }
+        if snapshot_ids
+        else {}
     )
     return [
         HistoryOut(
@@ -239,6 +257,7 @@ async def recent_history(db: AsyncSession = Depends(get_db), current: User = Dep
             activity=h.activity.value if h.activity else None,
             feedback=h.feedback,
             garment_ids=h.garment_ids,
+            weather=snapshots.get(h.weather_snapshot_id) if h.weather_snapshot_id is not None else None,
         )
         for h in result
     ]

@@ -9,7 +9,7 @@ import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../home/home_screen.dart';
 import '../location/location_controller.dart';
-import '../mannequin/mannequin_viewer.dart';
+import '../mannequin/outfit_stage.dart';
 import '../location/destination_screen.dart';
 import '../history/history_screen.dart';
 import '../../core/widgets/app_widgets.dart';
@@ -155,7 +155,7 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
     }
   }
 
-  Future<void> _sendFeedback(String action) async {
+  Future<void> _sendFeedback(String action, String? reason) async {
     final reco = _recommendation;
     if (reco == null) return;
     try {
@@ -164,7 +164,7 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
           .dio
           .post(
             '/recommendations/${reco.id}/feedback',
-            data: {'action': action},
+            data: {'action': action, 'reason': ?reason},
           );
       if (mounted) {
         ScaffoldMessenger.of(
@@ -215,6 +215,7 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
             '/outfits/wear',
             data: {
               'outfit_id': _savedOutfitId,
+              'weather_snapshot_id': reco.weatherSummary['weather_snapshot_id'],
               'garment_ids': _customGarmentIds ?? proposal.garmentIds,
               'destination_label': reco.destinationLabel,
               'activity': reco.activity,
@@ -279,6 +280,26 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
                 _Step.result => _show3D ? _build3D() : _buildResult(),
                 _Step.details => _buildResult(details: true),
                 _Step.feedback => _FeedbackPanel(
+                  preview: OutfitStage(
+                    presentation:
+                        ref
+                            .watch(authControllerProvider)
+                            .user
+                            ?.mannequinPresentation ??
+                        'female',
+                    garments:
+                        (ref.watch(wardrobeProvider).valueOrNull ?? <Garment>[])
+                            .where(
+                              (g) =>
+                                  (_customGarmentIds ??
+                                          _recommendation!
+                                              .proposals[_selectedProposal]
+                                              .garmentIds)
+                                      .contains(g.id),
+                            )
+                            .toList(),
+                    height: 210,
+                  ),
                   onFeedback: _sendFeedback,
                   onDone: () => context.go('/'),
                 ),
@@ -296,7 +317,7 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
     final theme = Theme.of(context);
     final location = ref.watch(locationControllerProvider);
     return ListView(
-      padding: const EdgeInsets.all(AppTheme.spacingL),
+      padding: const EdgeInsets.all(AppTheme.spacingM),
       children: [
         Text(
           'Indique ton contexte pour une recommandation personnalisée.',
@@ -455,6 +476,40 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
 
   // ---- Écran 19/20 : résultat -------------------------------------------------
 
+  Future<void> _replaceSlot(String slot) async {
+    if (_recommendation == null || _saving) return;
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    try {
+      final result = await ref
+          .read(apiClientProvider)
+          .dio
+          .post(
+            '/recommendations/${_recommendation!.id}/replace',
+            data: {
+              'slot': slot,
+              'garment_ids':
+                  _customGarmentIds ??
+                  _recommendation!.proposals[_selectedProposal].garmentIds,
+            },
+          );
+      if (mounted) {
+        setState(() {
+          _customGarmentIds = (result.data['garment_ids'] as List)
+              .cast<String>();
+          _savedOutfitId = null;
+          _worn = false;
+        });
+      }
+    } on DioException catch (e) {
+      if (mounted) setState(() => _error = ApiException.fromDio(e).message);
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
   Widget _buildResult({bool details = false}) {
     final theme = Theme.of(context);
     final reco = _recommendation!;
@@ -462,7 +517,7 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
     final summary = reco.weatherSummary;
 
     return ListView(
-      padding: const EdgeInsets.all(AppTheme.spacingL),
+      padding: const EdgeInsets.all(AppTheme.spacingM),
       children: [
         if (reco.destinationLabel != null)
           Card(
@@ -478,7 +533,18 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
           ),
         const SizedBox(height: AppTheme.spacingM),
         if (!details)
-          _GarmentPreview(garmentIds: _customGarmentIds ?? proposal.garmentIds),
+          OutfitStage(
+            presentation:
+                ref.watch(authControllerProvider).user?.mannequinPresentation ??
+                'female',
+            garments: (ref.watch(wardrobeProvider).asData?.value ?? <Garment>[])
+                .where(
+                  (g) =>
+                      (_customGarmentIds ?? proposal.garmentIds).contains(g.id),
+                )
+                .toList(),
+            height: 360,
+          ),
         const SizedBox(height: AppTheme.spacingM),
         if (!details && reco.proposals.length > 1)
           SegmentedButton<int>(
@@ -585,9 +651,9 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
         'female';
 
     return ListView(
-      padding: const EdgeInsets.all(AppTheme.spacingL),
+      padding: const EdgeInsets.all(AppTheme.spacingM),
       children: [
-        MannequinViewer(
+        OutfitStage(
           presentation: presentation,
           garments: (ref.watch(wardrobeProvider).asData?.value ?? <Garment>[])
               .where(
@@ -595,10 +661,25 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
                     (_customGarmentIds ?? proposal.garmentIds).contains(g.id),
               )
               .toList(),
-          height: 440,
+          height: MediaQuery.sizeOf(context).height * .62,
         ),
         const SizedBox(height: 12),
         const Text('Représentation générique par catégorie et couleur.'),
+        Wrap(
+          spacing: 8,
+          children: [
+            for (final slot in const [
+              ('top', 'Changer le haut'),
+              ('bottom', 'Changer le bas'),
+              ('shoes', 'Changer les chaussures'),
+              ('outer', 'Changer la veste'),
+            ])
+              OutlinedButton(
+                onPressed: _saving ? null : () => _replaceSlot(slot.$1),
+                child: Text(slot.$2),
+              ),
+          ],
+        ),
         OutlinedButton.icon(
           icon: const Icon(Icons.edit_outlined),
           label: const Text('Changer une pièce'),
@@ -654,92 +735,6 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
 }
 
 /// Aperçu vertical des pièces de la proposition (maquette écran 19).
-class _GarmentPreview extends ConsumerWidget {
-  const _GarmentPreview({required this.garmentIds});
-
-  final List<String> garmentIds;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final wardrobe = ref.watch(wardrobeProvider);
-    final theme = Theme.of(context);
-    return wardrobe.when(
-      loading: () => const SizedBox(
-        height: 200,
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (e, _) => AppErrorView(
-        message: e.toString(),
-        onRetry: () => ref.invalidate(wardrobeProvider),
-      ),
-      data: (garments) {
-        final byId = {for (final g in garments) g.id: g};
-        return SizedBox(
-          height: 220,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: garmentIds.length,
-            separatorBuilder: (_, _) =>
-                const SizedBox(width: AppTheme.spacingS),
-            itemBuilder: (context, i) {
-              final garment = byId[garmentIds[i]];
-              final imageUrl = garment != null && garment.images.isNotEmpty
-                  ? garment.images.first.downloadUrl
-                  : null;
-              return Container(
-                width: 140,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(AppTheme.radiusM),
-                  border: Border.all(
-                    color: theme.colorScheme.outline,
-                    width: 0.5,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(AppTheme.radiusM),
-                        ),
-                        child: imageUrl != null
-                            ? Image.network(
-                                imageUrl,
-                                fit: BoxFit.contain,
-                                width: double.infinity,
-                                errorBuilder: (_, _, _) => const Center(
-                                  child: Text('Photo indisponible'),
-                                ),
-                              )
-                            : Center(
-                                child: Text(
-                                  garment?.name ?? 'Vêtement indisponible',
-                                  style: theme.textTheme.bodyMedium,
-                                ),
-                              ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        garment?.name ?? 'Pièce',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.labelMedium,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-}
-
 class _GarmentChips extends ConsumerWidget {
   const _GarmentChips({required this.garmentIds});
 
@@ -771,8 +766,13 @@ class _GarmentChips extends ConsumerWidget {
 
 /// Écran 22 — feedback rapide (j'aime / ça va / pas pour moi / trop chaud…).
 class _FeedbackPanel extends StatefulWidget {
-  const _FeedbackPanel({required this.onFeedback, required this.onDone});
-  final Future<void> Function(String) onFeedback;
+  const _FeedbackPanel({
+    required this.onFeedback,
+    required this.onDone,
+    required this.preview,
+  });
+  final Widget preview;
+  final Future<void> Function(String, String?) onFeedback;
   final VoidCallback onDone;
   @override
   State<_FeedbackPanel> createState() => _FeedbackPanelState();
@@ -782,15 +782,18 @@ class _FeedbackPanelState extends State<_FeedbackPanel> {
   String _action = 'like';
   bool _busy = false;
   String? _error;
-  static const _actions = [
+  String? _reason;
+  static const _reactions = [
     ('like', 'J’adore', Icons.favorite_outline),
+    ('okay', 'Ça va', Icons.sentiment_neutral),
     ('not_today', 'Pas pour moi', Icons.sentiment_dissatisfied),
-    ('too_hot', 'Trop chaud', Icons.wb_sunny_outlined),
-    ('too_cold', 'Trop froid', Icons.ac_unit),
-    ('dislike_combination', 'Association à revoir', Icons.checkroom_outlined),
-    ('change_top', 'Changer le haut', Icons.swap_horiz),
-    ('change_bottom', 'Changer le bas', Icons.swap_horiz),
-    ('change_shoes', 'Changer les chaussures', Icons.swap_horiz),
+  ];
+  static const _reasons = [
+    ('too_hot', 'Trop chaud'),
+    ('too_cold', 'Trop froid'),
+    ('dislike_combination', 'Pas mon style'),
+    ('uncomfortable', 'Inconfortable'),
+    ('other', 'Autre'),
   ];
   Future<void> _submit() async {
     setState(() {
@@ -798,7 +801,7 @@ class _FeedbackPanelState extends State<_FeedbackPanel> {
       _error = null;
     });
     try {
-      await widget.onFeedback(_action);
+      await widget.onFeedback(_action, _reason);
       if (mounted) widget.onDone();
     } on ApiException catch (e) {
       if (mounted) setState(() => _error = e.message);
@@ -811,20 +814,71 @@ class _FeedbackPanelState extends State<_FeedbackPanel> {
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.all(20),
     children: [
-      const Text('Ton avis améliore les prochaines recommandations.'),
+      widget.preview,
+      const SizedBox(height: 20),
+      Row(
+        children: [
+          for (final reaction in _reactions)
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: InkWell(
+                  onTap: _busy
+                      ? null
+                      : () => setState(() => _action = reaction.$1),
+                  borderRadius: BorderRadius.circular(14),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: _action == reaction.$1
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(
+                          reaction.$3,
+                          color: _action == reaction.$1
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : null,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          reaction.$2,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                color: _action == reaction.$1
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : null,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
       const SizedBox(height: 24),
+      const Text('Plus de détails (optionnel)'),
+      const SizedBox(height: 10),
       Wrap(
         spacing: 8,
         runSpacing: 8,
         children: [
-          for (final action in _actions)
+          for (final reason in _reasons)
             ChoiceChip(
-              avatar: Icon(action.$3, size: 18),
-              label: Text(action.$2),
-              selected: _action == action.$1,
+              label: Text(reason.$2),
+              selected: _reason == reason.$1,
               onSelected: _busy
                   ? null
-                  : (_) => setState(() => _action = action.$1),
+                  : (selected) =>
+                        setState(() => _reason = selected ? reason.$1 : null),
             ),
         ],
       ),

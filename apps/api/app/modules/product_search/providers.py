@@ -29,6 +29,7 @@ class ProductCandidate(StrictModel):
     images: list[str] = Field(default_factory=list, max_length=5)
     confidence: float = Field(default=0, ge=0, le=1)
     source: str = Field(default="unknown", max_length=40)
+    url: str | None = Field(default=None, max_length=2048)
 
 
 class ProductSearchProvider:
@@ -100,6 +101,15 @@ class UpcItemDbProvider(ProductSearchProvider):
                     except ApiError:
                         continue
             try:
+                product_url = None
+                offers = item.get("offers")
+                for offer in (offers if isinstance(offers, list) else [])[:5]:
+                    if isinstance(offer, dict) and isinstance(offer.get("link"), str):
+                        try:
+                            product_url = validate_public_url(offer["link"], resolve=False)
+                            break
+                        except ApiError:
+                            continue
                 result.append(
                     ProductCandidate(
                         name=item.get("title", ""),
@@ -115,8 +125,28 @@ class UpcItemDbProvider(ProductSearchProvider):
                         images=images,
                         confidence=confidence,
                         source=self.name,
+                        url=product_url,
                     )
                 )
+                hit = result[-1]
+                if endpoint == "lookup":
+                    requested = str(params.get("upc", "")).lstrip("0")
+                    hit.confidence = float(
+                        any(code and code.lstrip("0") == requested for code in [hit.ean, hit.upc, hit.gtin])
+                    )
+                else:
+                    import re
+
+                    query_words = set(re.findall(r"\w+", str(params.get("s", "")).casefold()))
+                    result_words = set(
+                        re.findall(
+                            r"\w+",
+                            " ".join(
+                                str(v or "") for v in [hit.name, hit.brand, hit.reference, hit.color]
+                            ).casefold(),
+                        )
+                    )
+                    hit.confidence = len(query_words & result_words) / len(query_words) if query_words else 0
             except (ValidationError, ValueError):
                 log.warning("catalog.invalid_candidate")
         return result

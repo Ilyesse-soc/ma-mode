@@ -76,6 +76,7 @@ async def fetch_and_snapshot(
     latitude: float,
     longitude: float,
     location_label: str | None = None,
+    snapshot_ids: list[int] | None = None,
 ) -> WeatherReport:
     report = await get_weather_provider().forecast(latitude, longitude)
     snapshot = WeatherSnapshot(
@@ -91,6 +92,8 @@ async def fetch_and_snapshot(
     )
     db.add(snapshot)
     await db.flush()
+    if snapshot_ids is not None:
+        snapshot_ids.append(snapshot.id)
     return report
 
 

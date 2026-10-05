@@ -131,6 +131,21 @@ class AuthController extends Notifier<AuthState> {
     state = AuthState(status: AuthStatus.authenticated, user: user);
   }
 
+  Future<void> completeOnboardingStep(String step) async {
+    try {
+      final response = await ref
+          .read(apiClientProvider)
+          .dio
+          .put('/me/onboarding', data: {'step': step});
+      state = AuthState(
+        status: AuthStatus.authenticated,
+        user: User.fromJson((response.data as Map).cast<String, dynamic>()),
+      );
+    } on DioException catch (error) {
+      throw ApiException.fromDio(error);
+    }
+  }
+
   Future<void> logout() async {
     ref.read(apiClientProvider).invalidateSession();
     final tokens = ref.read(tokenStorageProvider);

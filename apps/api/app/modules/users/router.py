@@ -18,6 +18,7 @@ from app.modules.users.schemas import (
     DeleteAccountIn,
     LoginRequest,
     MessageOut,
+    OnboardingStepIn,
     PasswordResetConfirmIn,
     PasswordResetRequestIn,
     PreferencesIn,
@@ -32,6 +33,20 @@ from app.modules.users.schemas import (
 
 router = APIRouter(tags=["auth"])
 limiter = Limiter(key_func=get_remote_address)
+
+
+@router.put("/me/onboarding", response_model=UserOut)
+async def complete_onboarding_step(
+    payload: OnboardingStepIn,
+    current: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    locked = await db.scalar(select(User).where(User.id == current.id).with_for_update())
+    if locked is None:
+        raise not_found("user")
+    locked.onboarding_steps = list(dict.fromkeys([*(locked.onboarding_steps or []), payload.step]))
+    await db.commit()
+    return locked
 
 
 def _rate(key: str) -> str:

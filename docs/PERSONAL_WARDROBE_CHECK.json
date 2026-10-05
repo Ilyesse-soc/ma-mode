@@ -1,0 +1,277 @@
+{
+  "scope": "Only the explicitly configured local account; read-only engine scenarios, never production weather overrides",
+  "garments": 48,
+  "savedOutfits": 5,
+  "categories": {
+    "head": 5,
+    "top": 12,
+    "outer": 6,
+    "bottom": 12,
+    "shoes": 5,
+    "wrist": 2,
+    "other": 6
+  },
+  "images": "Category illustrations; no invented photo or reference",
+  "scenarios": [
+    {
+      "temperature": 5,
+      "rain": 0.9,
+      "activity": "everyday",
+      "pieces": [
+        {
+          "category": "sweater",
+          "warmth": 5,
+          "waterproof": false
+        },
+        {
+          "category": "joggers",
+          "warmth": 4,
+          "waterproof": false
+        },
+        {
+          "category": "jacket",
+          "warmth": 3,
+          "waterproof": true
+        },
+        {
+          "category": "boots",
+          "warmth": 4,
+          "waterproof": true
+        },
+        {
+          "category": "beanie",
+          "warmth": 4,
+          "waterproof": false
+        },
+        {
+          "category": "watch",
+          "warmth": 1,
+          "waterproof": false
+        }
+      ],
+      "explanations": [
+        "Risque de pluie de 90 % : pièce imperméable incluse.",
+        "Il fera 5 °C ressentis au plus frais : tenue chaude conseillée.",
+        "Les couleurs se marient bien ensemble."
+      ]
+    },
+    {
+      "temperature": 10,
+      "rain": 0,
+      "activity": "everyday",
+      "pieces": [
+        {
+          "category": "sweater",
+          "warmth": 4,
+          "waterproof": false
+        },
+        {
+          "category": "joggers",
+          "warmth": 4,
+          "waterproof": false
+        },
+        {
+          "category": "jacket",
+          "warmth": 3,
+          "waterproof": true
+        },
+        {
+          "category": "boots",
+          "warmth": 4,
+          "waterproof": true
+        },
+        {
+          "category": "beanie",
+          "warmth": 4,
+          "waterproof": false
+        },
+        {
+          "category": "watch",
+          "warmth": 1,
+          "waterproof": false
+        }
+      ],
+      "explanations": [
+        "Il fera 10 °C ressentis au plus frais : tenue chaude conseillée.",
+        "Les couleurs se marient bien ensemble."
+      ]
+    },
+    {
+      "temperature": 18,
+      "rain": 0,
+      "activity": "everyday",
+      "pieces": [
+        {
+          "category": "tshirt",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "jeans",
+          "warmth": 3,
+          "waterproof": false
+        },
+        {
+          "category": "sneakers",
+          "warmth": 2,
+          "waterproof": false
+        },
+        {
+          "category": "cap",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "watch",
+          "warmth": 1,
+          "waterproof": false
+        }
+      ],
+      "explanations": [
+        "Les couleurs se marient bien ensemble."
+      ]
+    },
+    {
+      "temperature": 25,
+      "rain": 0,
+      "activity": "everyday",
+      "pieces": [
+        {
+          "category": "tshirt",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "shorts",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "sneakers",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "cap",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "watch",
+          "warmth": 1,
+          "waterproof": false
+        }
+      ],
+      "explanations": [
+        "Jusqu'à 25 °C ressentis : tenue légère privilégiée.",
+        "Les couleurs se marient bien ensemble."
+      ]
+    },
+    {
+      "temperature": 18,
+      "rain": 0,
+      "activity": "evening",
+      "pieces": [
+        {
+          "category": "polo",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "trousers",
+          "warmth": 3,
+          "waterproof": false
+        },
+        {
+          "category": "dress_shoes",
+          "warmth": 2,
+          "waterproof": false
+        },
+        {
+          "category": "cap",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "watch",
+          "warmth": 1,
+          "waterproof": false
+        }
+      ],
+      "explanations": [
+        "Les couleurs se marient bien ensemble."
+      ]
+    },
+    {
+      "temperature": 18,
+      "rain": 0,
+      "activity": "work",
+      "pieces": [
+        {
+          "category": "polo",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "trousers",
+          "warmth": 3,
+          "waterproof": false
+        },
+        {
+          "category": "dress_shoes",
+          "warmth": 2,
+          "waterproof": false
+        },
+        {
+          "category": "cap",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "watch",
+          "warmth": 1,
+          "waterproof": false
+        }
+      ],
+      "explanations": [
+        "Les couleurs se marient bien ensemble."
+      ]
+    },
+    {
+      "temperature": 18,
+      "rain": 0,
+      "activity": "travel",
+      "pieces": [
+        {
+          "category": "tshirt",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "jeans",
+          "warmth": 3,
+          "waterproof": false
+        },
+        {
+          "category": "sneakers",
+          "warmth": 2,
+          "waterproof": false
+        },
+        {
+          "category": "cap",
+          "warmth": 1,
+          "waterproof": false
+        },
+        {
+          "category": "watch",
+          "warmth": 1,
+          "waterproof": false
+        }
+      ],
+      "explanations": [
+        "Les couleurs se marient bien ensemble."
+      ]
+    }
+  ],
+  "passed": true
+}

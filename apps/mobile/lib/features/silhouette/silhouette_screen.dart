@@ -22,12 +22,9 @@ class _SilhouetteScreenState extends ConsumerState<SilhouetteScreen> {
 
   static const _zones = [
     ('head', 'Tête', Icons.face_outlined),
-    ('face', 'Visage', Icons.visibility_outlined),
-    ('torso', 'Torse', Icons.checkroom_outlined),
-    ('arms', 'Bras', Icons.front_hand_outlined),
+    ('torso', 'Hauts', Icons.checkroom_outlined),
     ('wrists', 'Poignets', Icons.watch_outlined),
-    ('waist', 'Taille', Icons.stacked_line_chart),
-    ('legs', 'Jambes', Icons.directions_walk),
+    ('legs', 'Bas', Icons.directions_walk),
     ('feet', 'Pieds', Icons.ice_skating_outlined),
   ];
 
@@ -88,8 +85,8 @@ class _SilhouetteScreenState extends ConsumerState<SilhouetteScreen> {
               Expanded(
                 child: Row(
                   children: [
-                    Expanded(
-                      flex: 2,
+                    SizedBox(
+                      width: 100,
                       child: ListView(
                         children: [
                           Text(

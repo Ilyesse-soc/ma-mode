@@ -322,14 +322,34 @@ class OutfitComposer {
         final tp = <double>[], tn = <double>[], ti = <int>[];
         for (var ring = 0; ring < 10; ring++) {
           final t = ring / 9;
-          final width = height * (0.108 + 0.012 * t + (outer ? 0.015 : 0));
-          final depth = height * (0.09 + 0.01 * t + (outer ? 0.012 : 0));
+          // Tailored hem, waist, chest and shoulder profile rather than a cylinder.
+          final shoulder = t > .86 ? (t - .86) / .14 : 0.0;
+          final width =
+              height *
+              ((.105 - .013 * math.sin(t * math.pi) + .022 * t) *
+                      (1 - shoulder * .68) +
+                  (outer ? .012 : 0));
+          final depth =
+              height *
+              ((.076 + .012 * math.sin(t * math.pi)) * (1 - shoulder * .58) +
+                  (outer ? .01 : 0));
           for (var j = 0; j < 48; j++) {
             final angle = j * math.pi * 2 / 48;
             tp.addAll([
               width * math.cos(angle),
               floor +
-                  height * ((outer ? 0.49 : 0.55) + t * (outer ? 0.32 : 0.26)),
+                  height *
+                      ((slug == 'coat'
+                              ? .39
+                              : outer
+                              ? .49
+                              : .55) +
+                          t *
+                              (slug == 'coat'
+                                  ? .46
+                                  : outer
+                                  ? .36
+                                  : .30)),
               depth * math.sin(angle),
             ]);
             tn.addAll([math.cos(angle), 0, math.sin(angle)]);
@@ -346,6 +366,55 @@ class OutfitComposer {
           ti,
           material,
         );
+        // Collar, cuffs and visible closure details distinguish garment categories.
+        if ({
+          'shirt',
+          'polo',
+          'jacket',
+          'blazer',
+          'coat',
+          'cardigan',
+        }.contains(slug)) {
+          for (var button = 0; button < 5; button++) {
+            ellipsoid(
+              'Button_$button',
+              0,
+              .77 - button * .043,
+              .09,
+              .003,
+              .003,
+              .002,
+            );
+          }
+          for (final side in [-1, 1]) {
+            ellipsoid(
+              'Collar_$side',
+              side * .025,
+              .827,
+              .053,
+              .022,
+              .015,
+              .012,
+            );
+          }
+        }
+        if (slug == 'hoodie') {
+          ellipsoid('Hood', 0, .844, -.035, .057, .051, .04);
+          ellipsoid('KangarooPocket', 0, .605, .095, .062, .027, .012);
+        }
+        if (outer) {
+          for (final side in [-1, 1]) {
+            ellipsoid(
+              'Pocket_$side',
+              side * .071,
+              .575,
+              .098,
+              .019,
+              .027,
+              .009,
+            );
+          }
+        }
       }
       if (group == 'bottom' && slug != 'skirt' && slug != 'dress') {
         final hp = <double>[], hn = <double>[], hi = <int>[];

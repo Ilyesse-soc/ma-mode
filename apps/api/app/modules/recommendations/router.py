@@ -1,6 +1,7 @@
 """Recommendation routes: generate, feedback, last."""
 
 import uuid
+from typing import Literal
 
 from fastapi import APIRouter, Depends
 from pydantic import Field
@@ -93,6 +94,7 @@ async def generate(
 class FeedbackIn(StrictModel):
     action: FeedbackAction
     garment_id: uuid.UUID | None = None
+    reason: Literal["too_hot", "too_cold", "dislike_combination", "uncomfortable", "other"] | None = None
 
 
 @router.post("/recommendations/{recommendation_id}/feedback", status_code=201)
@@ -102,7 +104,9 @@ async def feedback(
     db: AsyncSession = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    await service.record_feedback(db, current.id, recommendation_id, payload.action, payload.garment_id)
+    await service.record_feedback(
+        db, current.id, recommendation_id, payload.action, payload.garment_id, payload.reason
+    )
     await db.commit()
     return {"message": "Merci pour ton retour"}
 
@@ -111,3 +115,20 @@ async def feedback(
 async def last_recommendation(db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
     reco = await service.get_last_recommendation(db, current.id)
     return _to_out(reco) if reco else None
+
+
+class ReplaceSlotIn(StrictModel):
+    garment_ids: list[uuid.UUID] = Field(min_length=1, max_length=20)
+    slot: Literal["top", "bottom", "shoes", "outer"]
+
+
+@router.post("/recommendations/{recommendation_id}/replace")
+async def replace_garment(
+    recommendation_id: uuid.UUID,
+    payload: ReplaceSlotIn,
+    db: AsyncSession = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    from app.modules.recommendations.replacement import replace_slot
+
+    return await replace_slot(db, current.id, recommendation_id, payload.garment_ids, payload.slot)

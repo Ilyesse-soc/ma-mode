@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'photo_screen.dart';
 import 'photo_guide_screen.dart';
+import 'identification_review_screen.dart';
 
 import '../../../core/models.dart';
 import '../../../core/network/api_client.dart';
@@ -110,38 +111,16 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
       final resp = await ref
           .read(apiClientProvider)
           .dio
-          .post('/garments/identify/barcode', data: {'barcode': barcode});
+          .post(
+            '/garments/identify/barcode',
+            data: {
+              'barcode': barcode,
+              if (_draftId != null) 'garment_id': _draftId,
+            },
+          );
       if (!mounted) return;
       _draftId = resp.data['garment_id'] as String?;
-      final status = resp.data['status'] as String;
-      if (status == 'not_found') {
-        setState(() {
-          _notice = 'Code-barres inconnu — renseigne le vêtement manuellement.';
-          _formExpanded = true;
-        });
-      } else {
-        final candidates = (resp.data['candidates'] as List);
-        if (candidates.isNotEmpty) {
-          final proposed = (candidates.first['proposed'] as Map)
-              .cast<String, dynamic>();
-          final confidence =
-              (candidates.first['confidence'] as num?)?.toDouble() ?? 0.0;
-          final accepted = await _showScanResult(proposed, confidence);
-          if (!mounted) return;
-          _candidateId = accepted ? candidates.first['id'] as String? : null;
-          setState(() {
-            _name.text = accepted ? (proposed['name'] as String?) ?? '' : '';
-            _brand.text = accepted ? (proposed['brand'] as String?) ?? '' : '';
-            _reference.text = accepted
-                ? (proposed['reference'] as String?) ?? ''
-                : '';
-            _formExpanded = true;
-            _notice = confidence >= 0.85
-                ? 'Article trouvé (${(confidence * 100).round()} % de confiance) — vérifie les champs.'
-                : 'Nous pensons avoir trouvé ce produit — confirme les détails.';
-          });
-        }
-      }
+      await _reviewIdentification(Map<String, dynamic>.from(resp.data as Map));
     } on DioException catch (e) {
       if (mounted) {
         setState(() => _notice = ApiException.fromDio(e).message);
@@ -198,6 +177,7 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
           'object_key': objectKey,
           'content_type': upload.data['content_type'],
           'byte_size': upload.data['byte_size'],
+          'image_kind': labelMode ? 'label' : 'garment',
           'width': upload.data['width'],
           'height': upload.data['height'],
         },
@@ -258,27 +238,9 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
         _notice = analysis.data['message'] as String?;
       });
 
-      final candidates = (analysis.data['candidates'] as List);
-      if (candidates.isNotEmpty) {
-        _candidateId = candidates.first['id'] as String?;
-        final proposed = (candidates.first['proposed'] as Map)
-            .cast<String, dynamic>();
-        setState(() {
-          _name.text = (proposed['name'] as String?) ?? _name.text;
-          _name.text = (proposed['product_name'] as String?) ?? _name.text;
-          _size.text = (proposed['size'] as String?) ?? _size.text;
-          _brand.text = (proposed['brand'] as String?) ?? _brand.text;
-          _color.text = (proposed['color'] as String?) ?? _color.text;
-          _material.text = (proposed['material'] as String?) ?? _material.text;
-          _reference.text =
-              (proposed['reference'] as String?) ?? _reference.text;
-          if (_categories.any((c) => c.slug == proposed['category_slug'])) {
-            _categorySlug = proposed['category_slug'] as String;
-          }
-          _formExpanded = true;
-          _notice = analysis.data['message'] as String?;
-        });
-      }
+      await _reviewIdentification(
+        Map<String, dynamic>.from(analysis.data as Map),
+      );
       if (!mounted) return;
       ref.invalidate(wardrobeProvider);
     } on DioException catch (e) {
@@ -300,52 +262,48 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
     }
   }
 
-  Future<bool> _showScanResult(
-    Map<String, dynamic> proposed,
-    double confidence,
-  ) async {
-    return await Navigator.of(context).push<bool>(
-          MaterialPageRoute(
-            builder: (context) => Scaffold(
-              appBar: AppBar(title: const Text('Résultat du scan')),
-              body: ListView(
-                padding: const EdgeInsets.all(20),
-                children: [
-                  const Text('Article trouvé'),
-                  const SizedBox(height: 24),
-                  Text(
-                    proposed['name'] as String? ?? 'Article scanné',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  if (proposed['brand'] != null)
-                    ListTile(
-                      title: const Text('Marque'),
-                      subtitle: Text(proposed['brand'].toString()),
-                    ),
-                  if (proposed['reference'] != null)
-                    ListTile(
-                      title: const Text('Référence'),
-                      subtitle: Text(proposed['reference'].toString()),
-                    ),
-                  Chip(
-                    avatar: const Icon(Icons.verified_outlined),
-                    label: Text('${(confidence * 100).round()} % de confiance'),
-                  ),
-                  const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('Vérifier et ajouter à ma garde-robe'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('Choisir manuellement'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ) ??
-        false;
+  Future<void> _reviewIdentification(Map<String, dynamic> result) async {
+    final id = result['garment_id'] as String? ?? _draftId;
+    if (id == null || !mounted) return;
+    _draftId = id;
+    final choice = await Navigator.of(context).push<Map<String, dynamic>>(
+      MaterialPageRoute(
+        builder: (_) =>
+            IdentificationReviewScreen(garmentId: id, result: result),
+      ),
+    );
+    if (!mounted || choice == null) return;
+    final action = choice['action'];
+    if (action == 'label' || action == 'photo') {
+      await _pickAndAnalyze(labelMode: action == 'label');
+      return;
+    }
+    if (action == 'barcode') {
+      await _scanBarcode();
+      return;
+    }
+    final proposed = Map<String, dynamic>.from(
+      (choice['proposed'] as Map?) ?? (result['evidence'] as Map?) ?? {},
+    );
+    setState(() {
+      _candidateId = choice['id'] as String?;
+      for (final entry in {
+        'name': _name,
+        'brand': _brand,
+        'reference': _reference,
+        'color': _color,
+        'size': _size,
+        'material': _material,
+      }.entries) {
+        if (proposed[entry.key] is String) {
+          entry.value.text = proposed[entry.key] as String;
+        }
+      }
+      if (_categories.any((c) => c.slug == proposed['category_slug'])) {
+        _categorySlug = proposed['category_slug'] as String;
+      }
+      _formExpanded = true;
+    });
   }
 
   Future<void> _save() async {
@@ -429,7 +387,7 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
         child: Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.all(AppTheme.spacingL),
+            padding: const EdgeInsets.all(AppTheme.spacingM),
             children: [
               if (widget.initialGarment == null && !_formExpanded) ...[
                 _MethodTile(
@@ -467,6 +425,16 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
               if (_busy) ...[
                 const SizedBox(height: AppTheme.spacingM),
                 const LinearProgressIndicator(),
+                const SizedBox(height: 12),
+                Text(
+                  _photo == null
+                      ? 'Recherche du produit…'
+                      : 'Analyse du vêtement…',
+                  style: theme.textTheme.titleMedium,
+                ),
+                const Text(
+                  'Lecture des informations · Recherche du produit · Comparaison des résultats',
+                ),
               ],
               if (_notice != null) ...[
                 const SizedBox(height: AppTheme.spacingM),
@@ -478,6 +446,30 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
                 ),
               ],
               if (_formExpanded) ...[
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: _busy
+                          ? null
+                          : () => _pickAndAnalyze(labelMode: false),
+                      icon: const Icon(Icons.photo_camera_outlined),
+                      label: const Text('Photo vêtement'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: _busy
+                          ? null
+                          : () => _pickAndAnalyze(labelMode: true),
+                      icon: const Icon(Icons.document_scanner_outlined),
+                      label: const Text('Photo étiquette'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: _busy ? null : _scanBarcode,
+                      icon: const Icon(Icons.qr_code_scanner),
+                      label: const Text('Code-barres'),
+                    ),
+                  ],
+                ),
                 if (widget.initialGarment == null)
                   TextButton.icon(
                     onPressed: _busy

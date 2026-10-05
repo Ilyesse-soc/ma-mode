@@ -1,0 +1,3075 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.69.3"
+  },
+  "ReportID": "01a10e3a-e3cc-7ec3-aad1-494287a1d78c",
+  "CreatedAt": "2026-10-06T00:41:42.8609675+02:00",
+  "ArtifactName": ".",
+  "ArtifactType": "filesystem",
+  "Metadata": {
+    "RepoURL": "https://github.com/Ilyesse-soc/ma-mode.git",
+    "Branch": "main",
+    "Commit": "f8bc8884526ae7ed88a3b34d1c70abf4c5b04850",
+    "CommitMsg": "Integrate supplied splash and onboarding backgrounds with premium reusable flow",
+    "Author": "Ilyesse El Adaoui \u003cilyessesoc@gmail.com\u003e",
+    "Committer": "Ilyesse El Adaoui \u003cilyessesoc@gmail.com\u003e"
+  },
+  "Results": [
+    {
+      "Target": "apps/api/requirements.txt",
+      "Class": "lang-pkgs",
+      "Type": "pip",
+      "Packages": [
+        {
+          "Name": "alembic",
+          "Identifier": {
+            "PURL": "pkg:pypi/alembic@1.20.0",
+            "UID": "437e245e45b92f9d"
+          },
+          "Version": "1.20.0",
+          "Locations": [
+            {
+              "StartLine": 3,
+              "EndLine": 3
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "annotated-doc",
+          "Identifier": {
+            "PURL": "pkg:pypi/annotated-doc@0.0.5",
+            "UID": "d50d01a13ae27ef7"
+          },
+          "Version": "0.0.5",
+          "Locations": [
+            {
+              "StartLine": 7,
+              "EndLine": 7
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "annotated-types",
+          "Identifier": {
+            "PURL": "pkg:pypi/annotated-types@0.8.0",
+            "UID": "e785f249b516e9a2"
+          },
+          "Version": "0.8.0",
+          "Locations": [
+            {
+              "StartLine": 11,
+              "EndLine": 11
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "anyio",
+          "Identifier": {
+            "PURL": "pkg:pypi/anyio@4.15.1",
+            "UID": "371111c4d6e64ee3"
+          },
+          "Version": "4.15.1",
+          "Locations": [
+            {
+              "StartLine": 15,
+              "EndLine": 15
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "argon2-cffi",
+          "Identifier": {
+            "PURL": "pkg:pypi/argon2-cffi@25.1.0",
+            "UID": "80601dd0f9ace55f"
+          },
+          "Version": "25.1.0",
+          "Locations": [
+            {
+              "StartLine": 22,
+              "EndLine": 22
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "argon2-cffi-bindings",
+          "Identifier": {
+            "PURL": "pkg:pypi/argon2-cffi-bindings@26.1.0",
+            "UID": "457848814c5dc5d2"
+          },
+          "Version": "26.1.0",
+          "Locations": [
+            {
+              "StartLine": 26,
+              "EndLine": 26
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "asyncpg",
+          "Identifier": {
+            "PURL": "pkg:pypi/asyncpg@0.31.0",
+            "UID": "1f186085d97523dd"
+          },
+          "Version": "0.31.0",
+          "Locations": [
+            {
+              "StartLine": 69,
+              "EndLine": 69
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "boto3",
+          "Identifier": {
+            "PURL": "pkg:pypi/boto3@1.43.108",
+            "UID": "db07bc00efe8f5db"
+          },
+          "Version": "1.43.108",
+          "Locations": [
+            {
+              "StartLine": 128,
+              "EndLine": 128
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "botocore",
+          "Identifier": {
+            "PURL": "pkg:pypi/botocore@1.43.108",
+            "UID": "27ebea0a53791e4a"
+          },
+          "Version": "1.43.108",
+          "Locations": [
+            {
+              "StartLine": 132,
+              "EndLine": 132
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "certifi",
+          "Identifier": {
+            "PURL": "pkg:pypi/certifi@2026.7.22",
+            "UID": "87b80174cc0d37da"
+          },
+          "Version": "2026.7.22",
+          "Locations": [
+            {
+              "StartLine": 138,
+              "EndLine": 138
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "cffi",
+          "Identifier": {
+            "PURL": "pkg:pypi/cffi@2.1.1",
+            "UID": "73bba6739934aad"
+          },
+          "Version": "2.1.1",
+          "Locations": [
+            {
+              "StartLine": 145,
+              "EndLine": 145
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "click",
+          "Identifier": {
+            "PURL": "pkg:pypi/click@8.5.0",
+            "UID": "2411f5bf4538b52c"
+          },
+          "Version": "8.5.0",
+          "Locations": [
+            {
+              "StartLine": 249,
+              "EndLine": 249
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "cryptography",
+          "Identifier": {
+            "PURL": "pkg:pypi/cryptography@50.0.2",
+            "UID": "ab9f6b7e93c2cce3"
+          },
+          "Version": "50.0.2",
+          "Locations": [
+            {
+              "StartLine": 253,
+              "EndLine": 253
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "deprecated",
+          "Identifier": {
+            "PURL": "pkg:pypi/deprecated@3.0.0",
+            "UID": "3c59c5fe138cf2d"
+          },
+          "Version": "3.0.0",
+          "Locations": [
+            {
+              "StartLine": 314,
+              "EndLine": 314
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "dnspython",
+          "Identifier": {
+            "PURL": "pkg:pypi/dnspython@2.8.0",
+            "UID": "1f85da91d71bbfd9"
+          },
+          "Version": "2.8.0",
+          "Locations": [
+            {
+              "StartLine": 318,
+              "EndLine": 318
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "email-validator",
+          "Identifier": {
+            "PURL": "pkg:pypi/email-validator@2.3.0",
+            "UID": "c7ebbcb4904e43bb"
+          },
+          "Version": "2.3.0",
+          "Locations": [
+            {
+              "StartLine": 322,
+              "EndLine": 322
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "fastapi",
+          "Identifier": {
+            "PURL": "pkg:pypi/fastapi@0.142.2",
+            "UID": "5d826f7028b98ff3"
+          },
+          "Version": "0.142.2",
+          "Locations": [
+            {
+              "StartLine": 326,
+              "EndLine": 326
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "greenlet",
+          "Identifier": {
+            "PURL": "pkg:pypi/greenlet@3.5.6",
+            "UID": "38c29d66e14bca1b"
+          },
+          "Version": "3.5.6",
+          "Locations": [
+            {
+              "StartLine": 330,
+              "EndLine": 330
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "h11",
+          "Identifier": {
+            "PURL": "pkg:pypi/h11@0.16.0",
+            "UID": "b6542ed7e99ea16a"
+          },
+          "Version": "0.16.0",
+          "Locations": [
+            {
+              "StartLine": 411,
+              "EndLine": 411
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "httpcore",
+          "Identifier": {
+            "PURL": "pkg:pypi/httpcore@1.0.9",
+            "UID": "b240faebdcc50b6a"
+          },
+          "Version": "1.0.9",
+          "Locations": [
+            {
+              "StartLine": 417,
+              "EndLine": 417
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "httptools",
+          "Identifier": {
+            "PURL": "pkg:pypi/httptools@0.8.0",
+            "UID": "160e92c5e39239c4"
+          },
+          "Version": "0.8.0",
+          "Locations": [
+            {
+              "StartLine": 421,
+              "EndLine": 421
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "httpx",
+          "Identifier": {
+            "PURL": "pkg:pypi/httpx@0.28.1",
+            "UID": "e4db7d41bc1a61ba"
+          },
+          "Version": "0.28.1",
+          "Locations": [
+            {
+              "StartLine": 473,
+              "EndLine": 473
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "idna",
+          "Identifier": {
+            "PURL": "pkg:pypi/idna@3.20",
+            "UID": "89f472df6ec92d79"
+          },
+          "Version": "3.20",
+          "Locations": [
+            {
+              "StartLine": 477,
+              "EndLine": 477
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "jmespath",
+          "Identifier": {
+            "PURL": "pkg:pypi/jmespath@1.1.0",
+            "UID": "613ea2873c88f3a0"
+          },
+          "Version": "1.1.0",
+          "Locations": [
+            {
+              "StartLine": 484,
+              "EndLine": 484
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "limits",
+          "Identifier": {
+            "PURL": "pkg:pypi/limits@5.8.0",
+            "UID": "33b16e8659f44ac0"
+          },
+          "Version": "5.8.0",
+          "Locations": [
+            {
+              "StartLine": 490,
+              "EndLine": 490
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "mako",
+          "Identifier": {
+            "PURL": "pkg:pypi/mako@1.4.3",
+            "UID": "376a0ac840c6fbe5"
+          },
+          "Version": "1.4.3",
+          "Locations": [
+            {
+              "StartLine": 494,
+              "EndLine": 494
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "markupsafe",
+          "Identifier": {
+            "PURL": "pkg:pypi/markupsafe@3.0.4",
+            "UID": "a4c894a4feb55384"
+          },
+          "Version": "3.0.4",
+          "Locations": [
+            {
+              "StartLine": 498,
+              "EndLine": 498
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "opentelemetry-api",
+          "Identifier": {
+            "PURL": "pkg:pypi/opentelemetry-api@1.45.0",
+            "UID": "324687bedbf5c5ca"
+          },
+          "Version": "1.45.0",
+          "Locations": [
+            {
+              "StartLine": 651,
+              "EndLine": 651
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "packaging",
+          "Identifier": {
+            "PURL": "pkg:pypi/packaging@26.3",
+            "UID": "64e4dc1d3b12db8d"
+          },
+          "Version": "26.3",
+          "Locations": [
+            {
+              "StartLine": 655,
+              "EndLine": 655
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "pillow",
+          "Identifier": {
+            "PURL": "pkg:pypi/pillow@12.3.0",
+            "UID": "b0f4e84a4fd85ba9"
+          },
+          "Version": "12.3.0",
+          "Locations": [
+            {
+              "StartLine": 659,
+              "EndLine": 659
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "pycparser",
+          "Identifier": {
+            "PURL": "pkg:pypi/pycparser@3.0",
+            "UID": "16ab667b2b5a0901"
+          },
+          "Version": "3.0",
+          "Locations": [
+            {
+              "StartLine": 748,
+              "EndLine": 748
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "pydantic",
+          "Identifier": {
+            "PURL": "pkg:pypi/pydantic@2.13.5",
+            "UID": "9ca85dbf11bacf90"
+          },
+          "Version": "2.13.5",
+          "Locations": [
+            {
+              "StartLine": 752,
+              "EndLine": 752
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "pydantic-core",
+          "Identifier": {
+            "PURL": "pkg:pypi/pydantic-core@2.46.5",
+            "UID": "c5aa71431a4b6cce"
+          },
+          "Version": "2.46.5",
+          "Locations": [
+            {
+              "StartLine": 759,
+              "EndLine": 759
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "pydantic-settings",
+          "Identifier": {
+            "PURL": "pkg:pypi/pydantic-settings@2.15.0",
+            "UID": "73a6562037ddd003"
+          },
+          "Version": "2.15.0",
+          "Locations": [
+            {
+              "StartLine": 881,
+              "EndLine": 881
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "pyjwt",
+          "Identifier": {
+            "PURL": "pkg:pypi/pyjwt@2.15.1",
+            "UID": "ad3f7b45c3638ff9"
+          },
+          "Version": "2.15.1",
+          "Locations": [
+            {
+              "StartLine": 885,
+              "EndLine": 885
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "python-dateutil",
+          "Identifier": {
+            "PURL": "pkg:pypi/python-dateutil@2.9.0.post0",
+            "UID": "25611b3976440751"
+          },
+          "Version": "2.9.0.post0",
+          "Locations": [
+            {
+              "StartLine": 889,
+              "EndLine": 889
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "python-dotenv",
+          "Identifier": {
+            "PURL": "pkg:pypi/python-dotenv@1.2.4",
+            "UID": "e0d8cc689efbad37"
+          },
+          "Version": "1.2.4",
+          "Locations": [
+            {
+              "StartLine": 893,
+              "EndLine": 893
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "python-multipart",
+          "Identifier": {
+            "PURL": "pkg:pypi/python-multipart@0.0.32",
+            "UID": "a4be57ee6ab1b03"
+          },
+          "Version": "0.0.32",
+          "Locations": [
+            {
+              "StartLine": 899,
+              "EndLine": 899
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "pyyaml",
+          "Identifier": {
+            "PURL": "pkg:pypi/pyyaml@6.0.3",
+            "UID": "978fc2f7f36e3fa8"
+          },
+          "Version": "6.0.3",
+          "Locations": [
+            {
+              "StartLine": 903,
+              "EndLine": 903
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "redis",
+          "Identifier": {
+            "PURL": "pkg:pypi/redis@8.1.0",
+            "UID": "b330a81ff40ef353"
+          },
+          "Version": "8.1.0",
+          "Locations": [
+            {
+              "StartLine": 978,
+              "EndLine": 978
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "s3transfer",
+          "Identifier": {
+            "PURL": "pkg:pypi/s3transfer@0.19.2",
+            "UID": "d30d6e1cd6a1a1e"
+          },
+          "Version": "0.19.2",
+          "Locations": [
+            {
+              "StartLine": 982,
+              "EndLine": 982
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "sentry-sdk",
+          "Identifier": {
+            "PURL": "pkg:pypi/sentry-sdk@2.71.0",
+            "UID": "6ce027fe23562792"
+          },
+          "Version": "2.71.0",
+          "Locations": [
+            {
+              "StartLine": 986,
+              "EndLine": 986
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "six",
+          "Identifier": {
+            "PURL": "pkg:pypi/six@1.17.0",
+            "UID": "d1b7f65fb2cb1117"
+          },
+          "Version": "1.17.0",
+          "Locations": [
+            {
+              "StartLine": 990,
+              "EndLine": 990
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "slowapi",
+          "Identifier": {
+            "PURL": "pkg:pypi/slowapi@0.1.10",
+            "UID": "efd44eefec2ac734"
+          },
+          "Version": "0.1.10",
+          "Locations": [
+            {
+              "StartLine": 994,
+              "EndLine": 994
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "sqlalchemy",
+          "Identifier": {
+            "PURL": "pkg:pypi/sqlalchemy@2.1.3",
+            "UID": "2b268b287bad5c0f"
+          },
+          "Version": "2.1.3",
+          "Locations": [
+            {
+              "StartLine": 998,
+              "EndLine": 998
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "starlette",
+          "Identifier": {
+            "PURL": "pkg:pypi/starlette@1.7.0",
+            "UID": "20c9635498fbbd8"
+          },
+          "Version": "1.7.0",
+          "Locations": [
+            {
+              "StartLine": 1074,
+              "EndLine": 1074
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "structlog",
+          "Identifier": {
+            "PURL": "pkg:pypi/structlog@26.1.0",
+            "UID": "a8d1f893de79b4f7"
+          },
+          "Version": "26.1.0",
+          "Locations": [
+            {
+              "StartLine": 1078,
+              "EndLine": 1078
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "typing-extensions",
+          "Identifier": {
+            "PURL": "pkg:pypi/typing-extensions@4.16.0",
+            "UID": "82ef378b8072189e"
+          },
+          "Version": "4.16.0",
+          "Locations": [
+            {
+              "StartLine": 1082,
+              "EndLine": 1082
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "typing-inspection",
+          "Identifier": {
+            "PURL": "pkg:pypi/typing-inspection@0.4.4",
+            "UID": "2c5e2623679d52ef"
+          },
+          "Version": "0.4.4",
+          "Locations": [
+            {
+              "StartLine": 1095,
+              "EndLine": 1095
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "urllib3",
+          "Identifier": {
+            "PURL": "pkg:pypi/urllib3@2.8.0",
+            "UID": "bd7b2627e84bc1eb"
+          },
+          "Version": "2.8.0",
+          "Locations": [
+            {
+              "StartLine": 1102,
+              "EndLine": 1102
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "uvicorn",
+          "Identifier": {
+            "PURL": "pkg:pypi/uvicorn@0.54.0",
+            "UID": "26188991dff52680"
+          },
+          "Version": "0.54.0",
+          "Locations": [
+            {
+              "StartLine": 1108,
+              "EndLine": 1108
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "uvloop",
+          "Identifier": {
+            "PURL": "pkg:pypi/uvloop@0.23.0",
+            "UID": "c52c48ac75ca98de"
+          },
+          "Version": "0.23.0",
+          "Locations": [
+            {
+              "StartLine": 1112,
+              "EndLine": 1112
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "watchfiles",
+          "Identifier": {
+            "PURL": "pkg:pypi/watchfiles@1.3.0",
+            "UID": "3dc6843c3dc2d17d"
+          },
+          "Version": "1.3.0",
+          "Locations": [
+            {
+              "StartLine": 1175,
+              "EndLine": 1175
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "websockets",
+          "Identifier": {
+            "PURL": "pkg:pypi/websockets@17.2",
+            "UID": "285e24569adb414c"
+          },
+          "Version": "17.2",
+          "Locations": [
+            {
+              "StartLine": 1210,
+              "EndLine": 1210
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "wrapt",
+          "Identifier": {
+            "PURL": "pkg:pypi/wrapt@2.5.0",
+            "UID": "3b5fcea8daf22967"
+          },
+          "Version": "2.5.0",
+          "Locations": [
+            {
+              "StartLine": 1360,
+              "EndLine": 1360
+            }
+          ],
+          "AnalyzedBy": "pip"
+        }
+      ]
+    },
+    {
+      "Target": "apps/mobile/pubspec.lock",
+      "Class": "lang-pkgs",
+      "Type": "pub",
+      "Packages": [
+        {
+          "ID": "camera@0.12.0+2",
+          "Name": "camera",
+          "Identifier": {
+            "PURL": "pkg:pub/camera@0.12.0%2B2",
+            "UID": "3001acf4b849dd35"
+          },
+          "Version": "0.12.0+2",
+          "Relationship": "direct",
+          "DependsOn": [
+            "camera_android_camerax@0.7.2",
+            "camera_avfoundation@0.10.3+1",
+            "camera_platform_interface@2.14.0",
+            "camera_web@0.3.5+6",
+            "flutter@0.0.0",
+            "flutter_plugin_android_lifecycle@2.0.35"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "camera_platform_interface@2.14.0",
+          "Name": "camera_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/camera_platform_interface@2.14.0",
+            "UID": "c6f9cf30766fec20"
+          },
+          "Version": "2.14.0",
+          "Relationship": "direct",
+          "DependsOn": [
+            "plugin_platform_interface@2.1.8",
+            "stream_transform@2.1.2",
+            "cross_file@0.3.5+5",
+            "flutter@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "connectivity_plus@6.1.5",
+          "Name": "connectivity_plus",
+          "Identifier": {
+            "PURL": "pkg:pub/connectivity_plus@6.1.5",
+            "UID": "8bd4971dcdeceb6d"
+          },
+          "Version": "6.1.5",
+          "Relationship": "direct",
+          "DependsOn": [
+            "meta@1.17.0",
+            "nm@0.5.0",
+            "collection@1.19.1",
+            "flutter@0.0.0",
+            "flutter_web_plugins@0.0.0",
+            "connectivity_plus_platform_interface@2.1.0",
+            "web@1.1.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "cupertino_icons@1.0.9",
+          "Name": "cupertino_icons",
+          "Identifier": {
+            "PURL": "pkg:pub/cupertino_icons@1.0.9",
+            "UID": "369e61039c5f9092"
+          },
+          "Version": "1.0.9",
+          "Relationship": "direct",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "dio@5.11.1",
+          "Name": "dio",
+          "Identifier": {
+            "PURL": "pkg:pub/dio@5.11.1",
+            "UID": "67b5e15aaf2ca502"
+          },
+          "Version": "5.11.1",
+          "Relationship": "direct",
+          "DependsOn": [
+            "async@2.13.1",
+            "collection@1.19.1",
+            "http_parser@4.1.2",
+            "meta@1.17.0",
+            "mime@2.1.0",
+            "path@1.9.1",
+            "dio_web_adapter@2.2.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "dressly_intro_assets@1.0.0",
+          "Name": "dressly_intro_assets",
+          "Identifier": {
+            "PURL": "pkg:pub/dressly_intro_assets@1.0.0",
+            "UID": "d6ab9703b17976db"
+          },
+          "Version": "1.0.0",
+          "Relationship": "direct",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter@0.0.0",
+          "Name": "flutter",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter@0.0.0",
+            "UID": "3d967b47565c28da"
+          },
+          "Version": "0.0.0",
+          "Relationship": "direct",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_animate@4.5.2",
+          "Name": "flutter_animate",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_animate@4.5.2",
+            "UID": "ef4780ff580da301"
+          },
+          "Version": "4.5.2",
+          "Relationship": "direct",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "flutter_shaders@0.1.3"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_lints@6.0.0",
+          "Name": "flutter_lints",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_lints@6.0.0",
+            "UID": "ea3b73516840cfea"
+          },
+          "Version": "6.0.0",
+          "Relationship": "direct",
+          "DependsOn": [
+            "lints@6.1.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_riverpod@2.6.1",
+          "Name": "flutter_riverpod",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_riverpod@2.6.1",
+            "UID": "1717b24b074fdd94"
+          },
+          "Version": "2.6.1",
+          "Relationship": "direct",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "riverpod@2.6.1",
+            "state_notifier@1.0.0",
+            "collection@1.19.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_secure_storage@9.2.4",
+          "Name": "flutter_secure_storage",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_secure_storage@9.2.4",
+            "UID": "5c43fc4752733b06"
+          },
+          "Version": "9.2.4",
+          "Relationship": "direct",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "flutter_secure_storage_linux@1.2.3",
+            "flutter_secure_storage_macos@3.1.3",
+            "flutter_secure_storage_platform_interface@1.1.2",
+            "flutter_secure_storage_web@1.2.1",
+            "flutter_secure_storage_windows@3.1.2",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_test@0.0.0",
+          "Name": "flutter_test",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_test@0.0.0",
+            "UID": "3621b52b703f3bcc"
+          },
+          "Version": "0.0.0",
+          "Relationship": "direct",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "geolocator@13.0.4",
+          "Name": "geolocator",
+          "Identifier": {
+            "PURL": "pkg:pub/geolocator@13.0.4",
+            "UID": "b96039b42826a1bc"
+          },
+          "Version": "13.0.4",
+          "Relationship": "direct",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "geolocator_platform_interface@4.4.0",
+            "geolocator_android@4.6.2",
+            "geolocator_apple@2.3.14",
+            "geolocator_web@4.1.4",
+            "geolocator_windows@0.2.5"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "go_router@16.3.0",
+          "Name": "go_router",
+          "Identifier": {
+            "PURL": "pkg:pub/go_router@16.3.0",
+            "UID": "9b5f6fe80c4db952"
+          },
+          "Version": "16.3.0",
+          "Relationship": "direct",
+          "DependsOn": [
+            "collection@1.19.1",
+            "flutter@0.0.0",
+            "flutter_web_plugins@0.0.0",
+            "logging@1.3.0",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "google_fonts@6.3.3",
+          "Name": "google_fonts",
+          "Identifier": {
+            "PURL": "pkg:pub/google_fonts@6.3.3",
+            "UID": "d0b4b6c73518a54d"
+          },
+          "Version": "6.3.3",
+          "Relationship": "direct",
+          "DependsOn": [
+            "crypto@3.0.7",
+            "flutter@0.0.0",
+            "http@1.6.0",
+            "path_provider@2.1.6"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "hive@2.2.3",
+          "Name": "hive",
+          "Identifier": {
+            "PURL": "pkg:pub/hive@2.2.3",
+            "UID": "3f30dd1ddd500e50"
+          },
+          "Version": "2.2.3",
+          "Relationship": "direct",
+          "DependsOn": [
+            "meta@1.17.0",
+            "crypto@3.0.7"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "hive_flutter@1.1.0",
+          "Name": "hive_flutter",
+          "Identifier": {
+            "PURL": "pkg:pub/hive_flutter@1.1.0",
+            "UID": "7b7df5b002dbe04c"
+          },
+          "Version": "1.1.0",
+          "Relationship": "direct",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "hive@2.2.3",
+            "path_provider@2.1.6",
+            "path@1.9.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "image_picker@1.2.3",
+          "Name": "image_picker",
+          "Identifier": {
+            "PURL": "pkg:pub/image_picker@1.2.3",
+            "UID": "8124a1ce9e1472ba"
+          },
+          "Version": "1.2.3",
+          "Relationship": "direct",
+          "DependsOn": [
+            "image_picker_ios@0.8.13+9",
+            "image_picker_linux@0.2.2",
+            "image_picker_macos@0.2.2+1",
+            "image_picker_platform_interface@2.11.1",
+            "image_picker_windows@0.2.2",
+            "flutter@0.0.0",
+            "image_picker_android@0.8.13+17",
+            "image_picker_for_web@3.1.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "mobile_scanner@7.4.2",
+          "Name": "mobile_scanner",
+          "Identifier": {
+            "PURL": "pkg:pub/mobile_scanner@7.4.2",
+            "UID": "4be4dcecdeb02a88"
+          },
+          "Version": "7.4.2",
+          "Relationship": "direct",
+          "DependsOn": [
+            "meta@1.17.0",
+            "plugin_platform_interface@2.1.8",
+            "web@1.1.1",
+            "collection@1.19.1",
+            "flutter@0.0.0",
+            "flutter_web_plugins@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "mocktail@1.0.5",
+          "Name": "mocktail",
+          "Identifier": {
+            "PURL": "pkg:pub/mocktail@1.0.5",
+            "UID": "cff496f65c7aa030"
+          },
+          "Version": "1.0.5",
+          "Relationship": "direct",
+          "DependsOn": [
+            "collection@1.19.1",
+            "matcher@0.12.19",
+            "test_api@0.7.10"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "model_viewer_plus@1.10.0",
+          "Name": "model_viewer_plus",
+          "Identifier": {
+            "PURL": "pkg:pub/model_viewer_plus@1.10.0",
+            "UID": "53702d770da54cba"
+          },
+          "Version": "1.10.0",
+          "Relationship": "direct",
+          "DependsOn": [
+            "android_intent_plus@6.1.0",
+            "flutter@0.0.0",
+            "path@1.9.1",
+            "url_launcher@6.3.3",
+            "web@1.1.1",
+            "webview_flutter@4.14.1",
+            "webview_flutter_android@4.12.0",
+            "webview_flutter_wkwebview@3.25.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "sentry_flutter@8.14.2",
+          "Name": "sentry_flutter",
+          "Identifier": {
+            "PURL": "pkg:pub/sentry_flutter@8.14.2",
+            "UID": "9ecdcae10d64d54"
+          },
+          "Version": "8.14.2",
+          "Relationship": "direct",
+          "DependsOn": [
+            "sentry@8.14.2",
+            "package_info_plus@9.0.1",
+            "meta@1.17.0",
+            "ffi@2.2.0",
+            "file@7.0.1",
+            "collection@1.19.1",
+            "flutter@0.0.0",
+            "flutter_web_plugins@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "share_plus@12.0.2",
+          "Name": "share_plus",
+          "Identifier": {
+            "PURL": "pkg:pub/share_plus@12.0.2",
+            "UID": "f17b83f35d95d5bc"
+          },
+          "Version": "12.0.2",
+          "Relationship": "direct",
+          "DependsOn": [
+            "url_launcher_web@2.4.3",
+            "url_launcher_linux@3.2.3",
+            "ffi@2.2.0",
+            "web@1.1.1",
+            "cross_file@0.3.5+5",
+            "mime@2.1.0",
+            "flutter_web_plugins@0.0.0",
+            "share_plus_platform_interface@6.1.0",
+            "url_launcher_windows@3.1.6",
+            "url_launcher_platform_interface@2.3.2",
+            "win32@5.15.0",
+            "meta@1.17.0",
+            "flutter@0.0.0",
+            "file@7.0.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "share_plus_platform_interface@6.1.0",
+          "Name": "share_plus_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/share_plus_platform_interface@6.1.0",
+            "UID": "6eafe3f92418d753"
+          },
+          "Version": "6.1.0",
+          "Relationship": "direct",
+          "DependsOn": [
+            "meta@1.17.0",
+            "mime@2.1.0",
+            "plugin_platform_interface@2.1.8",
+            "path_provider@2.1.6",
+            "uuid@4.6.0",
+            "cross_file@0.3.5+5",
+            "flutter@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "android_intent_plus@6.1.0",
+          "Name": "android_intent_plus",
+          "Identifier": {
+            "PURL": "pkg:pub/android_intent_plus@6.1.0",
+            "UID": "33cf9d62ff272373"
+          },
+          "Version": "6.1.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "platform@3.1.6",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "args@2.7.0",
+          "Name": "args",
+          "Identifier": {
+            "PURL": "pkg:pub/args@2.7.0",
+            "UID": "16a12392dbc50920"
+          },
+          "Version": "2.7.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "async@2.13.1",
+          "Name": "async",
+          "Identifier": {
+            "PURL": "pkg:pub/async@2.13.1",
+            "UID": "e02f61d83a52ceb"
+          },
+          "Version": "2.13.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "boolean_selector@2.1.2",
+          "Name": "boolean_selector",
+          "Identifier": {
+            "PURL": "pkg:pub/boolean_selector@2.1.2",
+            "UID": "7da28b71ecf2c710"
+          },
+          "Version": "2.1.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "source_span@1.10.2",
+            "string_scanner@1.4.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "camera_android_camerax@0.7.2",
+          "Name": "camera_android_camerax",
+          "Identifier": {
+            "PURL": "pkg:pub/camera_android_camerax@0.7.2",
+            "UID": "47ad5e6eb2b1b539"
+          },
+          "Version": "0.7.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "async@2.13.1",
+            "camera_platform_interface@2.14.0",
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "stream_transform@2.1.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "camera_avfoundation@0.10.3+1",
+          "Name": "camera_avfoundation",
+          "Identifier": {
+            "PURL": "pkg:pub/camera_avfoundation@0.10.3%2B1",
+            "UID": "da24d49ef138dd01"
+          },
+          "Version": "0.10.3+1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "camera_platform_interface@2.14.0",
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "stream_transform@2.1.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "camera_web@0.3.5+6",
+          "Name": "camera_web",
+          "Identifier": {
+            "PURL": "pkg:pub/camera_web@0.3.5%2B6",
+            "UID": "6928b4f3946284e2"
+          },
+          "Version": "0.3.5+6",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "camera_platform_interface@2.14.0",
+            "flutter@0.0.0",
+            "flutter_web_plugins@0.0.0",
+            "stream_transform@2.1.2",
+            "web@1.1.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "characters@1.4.1",
+          "Name": "characters",
+          "Identifier": {
+            "PURL": "pkg:pub/characters@1.4.1",
+            "UID": "62566303e82abea8"
+          },
+          "Version": "1.4.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "clock@1.1.2",
+          "Name": "clock",
+          "Identifier": {
+            "PURL": "pkg:pub/clock@1.1.2",
+            "UID": "37a5ef2a5c797b45"
+          },
+          "Version": "1.1.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "code_assets@1.2.1",
+          "Name": "code_assets",
+          "Identifier": {
+            "PURL": "pkg:pub/code_assets@1.2.1",
+            "UID": "6a99e6d0232db341"
+          },
+          "Version": "1.2.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "hooks@2.0.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "collection@1.19.1",
+          "Name": "collection",
+          "Identifier": {
+            "PURL": "pkg:pub/collection@1.19.1",
+            "UID": "eb07f9d51999b7a6"
+          },
+          "Version": "1.19.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "connectivity_plus_platform_interface@2.1.0",
+          "Name": "connectivity_plus_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/connectivity_plus_platform_interface@2.1.0",
+            "UID": "5a5987744409381a"
+          },
+          "Version": "2.1.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "plugin_platform_interface@2.1.8"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "cross_file@0.3.5+5",
+          "Name": "cross_file",
+          "Identifier": {
+            "PURL": "pkg:pub/cross_file@0.3.5%2B5",
+            "UID": "68b1aee3b1d174b"
+          },
+          "Version": "0.3.5+5",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0",
+            "web@1.1.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "crypto@3.0.7",
+          "Name": "crypto",
+          "Identifier": {
+            "PURL": "pkg:pub/crypto@3.0.7",
+            "UID": "7bbe7f588043f67f"
+          },
+          "Version": "3.0.7",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "typed_data@1.4.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "dbus@0.7.15",
+          "Name": "dbus",
+          "Identifier": {
+            "PURL": "pkg:pub/dbus@0.7.15",
+            "UID": "528533fc8534856c"
+          },
+          "Version": "0.7.15",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "args@2.7.0",
+            "ffi@2.2.0",
+            "meta@1.17.0",
+            "xml@7.0.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "dio_web_adapter@2.2.2",
+          "Name": "dio_web_adapter",
+          "Identifier": {
+            "PURL": "pkg:pub/dio_web_adapter@2.2.2",
+            "UID": "aa4287809c5839bf"
+          },
+          "Version": "2.2.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "dio@5.11.1",
+            "http_parser@4.1.2",
+            "meta@1.17.0",
+            "web@1.1.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "fake_async@1.3.3",
+          "Name": "fake_async",
+          "Identifier": {
+            "PURL": "pkg:pub/fake_async@1.3.3",
+            "UID": "26091824539f773e"
+          },
+          "Version": "1.3.3",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "clock@1.1.2",
+            "collection@1.19.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "ffi@2.2.0",
+          "Name": "ffi",
+          "Identifier": {
+            "PURL": "pkg:pub/ffi@2.2.0",
+            "UID": "919426bd41f8cd35"
+          },
+          "Version": "2.2.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "file@7.0.1",
+          "Name": "file",
+          "Identifier": {
+            "PURL": "pkg:pub/file@7.0.1",
+            "UID": "bab2c4cbd5f4f429"
+          },
+          "Version": "7.0.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0",
+            "path@1.9.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "file_selector_linux@0.9.4+1",
+          "Name": "file_selector_linux",
+          "Identifier": {
+            "PURL": "pkg:pub/file_selector_linux@0.9.4%2B1",
+            "UID": "2f4d300e1080afae"
+          },
+          "Version": "0.9.4+1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "file_selector_platform_interface@2.7.0",
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "cross_file@0.3.5+5"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "file_selector_macos@0.9.5+1",
+          "Name": "file_selector_macos",
+          "Identifier": {
+            "PURL": "pkg:pub/file_selector_macos@0.9.5%2B1",
+            "UID": "79e9fb3a23274c8f"
+          },
+          "Version": "0.9.5+1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "cross_file@0.3.5+5",
+            "file_selector_platform_interface@2.7.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "file_selector_platform_interface@2.7.0",
+          "Name": "file_selector_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/file_selector_platform_interface@2.7.0",
+            "UID": "75106d022cdadb14"
+          },
+          "Version": "2.7.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "http@1.6.0",
+            "plugin_platform_interface@2.1.8",
+            "cross_file@0.3.5+5",
+            "flutter@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "file_selector_windows@0.9.3+6",
+          "Name": "file_selector_windows",
+          "Identifier": {
+            "PURL": "pkg:pub/file_selector_windows@0.9.3%2B6",
+            "UID": "edaf10f59fb17d2e"
+          },
+          "Version": "0.9.3+6",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "cross_file@0.3.5+5",
+            "file_selector_platform_interface@2.7.0",
+            "flutter@0.0.0",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "fixnum@1.1.1",
+          "Name": "fixnum",
+          "Identifier": {
+            "PURL": "pkg:pub/fixnum@1.1.1",
+            "UID": "825f6b65ad316494"
+          },
+          "Version": "1.1.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_plugin_android_lifecycle@2.0.35",
+          "Name": "flutter_plugin_android_lifecycle",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_plugin_android_lifecycle@2.0.35",
+            "UID": "72eb8b4ecff1065"
+          },
+          "Version": "2.0.35",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_secure_storage_linux@1.2.3",
+          "Name": "flutter_secure_storage_linux",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_secure_storage_linux@1.2.3",
+            "UID": "3d7f038759b40830"
+          },
+          "Version": "1.2.3",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter_secure_storage_platform_interface@1.1.2",
+            "flutter@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_secure_storage_macos@3.1.3",
+          "Name": "flutter_secure_storage_macos",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_secure_storage_macos@3.1.3",
+            "UID": "eb3d4280f1403fa6"
+          },
+          "Version": "3.1.3",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "flutter_secure_storage_platform_interface@1.1.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_secure_storage_platform_interface@1.1.2",
+          "Name": "flutter_secure_storage_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_secure_storage_platform_interface@1.1.2",
+            "UID": "42948623f4f24e76"
+          },
+          "Version": "1.1.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "plugin_platform_interface@2.1.8"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_secure_storage_web@1.2.1",
+          "Name": "flutter_secure_storage_web",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_secure_storage_web@1.2.1",
+            "UID": "4bbea09693897d9b"
+          },
+          "Version": "1.2.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter_secure_storage_platform_interface@1.1.2",
+            "flutter_web_plugins@0.0.0",
+            "js@0.6.7",
+            "flutter@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_secure_storage_windows@3.1.2",
+          "Name": "flutter_secure_storage_windows",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_secure_storage_windows@3.1.2",
+            "UID": "ece8095f312fb7ce"
+          },
+          "Version": "3.1.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "flutter_secure_storage_platform_interface@1.1.2",
+            "path@1.9.1",
+            "path_provider@2.1.6",
+            "win32@5.15.0",
+            "ffi@2.2.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_shaders@0.1.3",
+          "Name": "flutter_shaders",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_shaders@0.1.3",
+            "UID": "b7c9773bde93fb01"
+          },
+          "Version": "0.1.3",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "vector_math@2.2.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "flutter_web_plugins@0.0.0",
+          "Name": "flutter_web_plugins",
+          "Identifier": {
+            "PURL": "pkg:pub/flutter_web_plugins@0.0.0",
+            "UID": "706326e1a15085ce"
+          },
+          "Version": "0.0.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "geolocator_android@4.6.2",
+          "Name": "geolocator_android",
+          "Identifier": {
+            "PURL": "pkg:pub/geolocator_android@4.6.2",
+            "UID": "866170fd1ec1efa8"
+          },
+          "Version": "4.6.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "geolocator_platform_interface@4.4.0",
+            "meta@1.17.0",
+            "uuid@4.6.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "geolocator_apple@2.3.14",
+          "Name": "geolocator_apple",
+          "Identifier": {
+            "PURL": "pkg:pub/geolocator_apple@2.3.14",
+            "UID": "cad62973edebf98b"
+          },
+          "Version": "2.3.14",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "geolocator_platform_interface@4.4.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "geolocator_platform_interface@4.4.0",
+          "Name": "geolocator_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/geolocator_platform_interface@4.4.0",
+            "UID": "dec22e1fad18448a"
+          },
+          "Version": "4.4.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "plugin_platform_interface@2.1.8",
+            "vector_math@2.2.0",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "geolocator_web@4.1.4",
+          "Name": "geolocator_web",
+          "Identifier": {
+            "PURL": "pkg:pub/geolocator_web@4.1.4",
+            "UID": "111080fe30029f4e"
+          },
+          "Version": "4.1.4",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "flutter_web_plugins@0.0.0",
+            "geolocator_platform_interface@4.4.0",
+            "web@1.1.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "geolocator_windows@0.2.5",
+          "Name": "geolocator_windows",
+          "Identifier": {
+            "PURL": "pkg:pub/geolocator_windows@0.2.5",
+            "UID": "94d465dff7e5793d"
+          },
+          "Version": "0.2.5",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "geolocator_platform_interface@4.4.0",
+            "flutter@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "hooks@2.0.2",
+          "Name": "hooks",
+          "Identifier": {
+            "PURL": "pkg:pub/hooks@2.0.2",
+            "UID": "b29fc5e51f88d64b"
+          },
+          "Version": "2.0.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "logging@1.3.0",
+            "meta@1.17.0",
+            "pub_semver@2.2.1",
+            "record_use@0.6.0",
+            "yaml@3.1.4",
+            "collection@1.19.1",
+            "crypto@3.0.7"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "http@1.6.0",
+          "Name": "http",
+          "Identifier": {
+            "PURL": "pkg:pub/http@1.6.0",
+            "UID": "930aed2f02d13df2"
+          },
+          "Version": "1.6.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "async@2.13.1",
+            "http_parser@4.1.2",
+            "meta@1.17.0",
+            "web@1.1.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "http_parser@4.1.2",
+          "Name": "http_parser",
+          "Identifier": {
+            "PURL": "pkg:pub/http_parser@4.1.2",
+            "UID": "6f4d986bee8f039e"
+          },
+          "Version": "4.1.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "source_span@1.10.2",
+            "string_scanner@1.4.1",
+            "typed_data@1.4.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "image_picker_android@0.8.13+17",
+          "Name": "image_picker_android",
+          "Identifier": {
+            "PURL": "pkg:pub/image_picker_android@0.8.13%2B17",
+            "UID": "62953f74927f3201"
+          },
+          "Version": "0.8.13+17",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "flutter_plugin_android_lifecycle@2.0.35",
+            "image_picker_platform_interface@2.11.1",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "image_picker_for_web@3.1.1",
+          "Name": "image_picker_for_web",
+          "Identifier": {
+            "PURL": "pkg:pub/image_picker_for_web@3.1.1",
+            "UID": "dd6bf09a9a08e0ad"
+          },
+          "Version": "3.1.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "image_picker_platform_interface@2.11.1",
+            "mime@2.1.0",
+            "web@1.1.1",
+            "flutter@0.0.0",
+            "flutter_web_plugins@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "image_picker_ios@0.8.13+9",
+          "Name": "image_picker_ios",
+          "Identifier": {
+            "PURL": "pkg:pub/image_picker_ios@0.8.13%2B9",
+            "UID": "712ec9d32a5aaaac"
+          },
+          "Version": "0.8.13+9",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0",
+            "flutter@0.0.0",
+            "image_picker_platform_interface@2.11.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "image_picker_linux@0.2.2",
+          "Name": "image_picker_linux",
+          "Identifier": {
+            "PURL": "pkg:pub/image_picker_linux@0.2.2",
+            "UID": "b7a8ffea1b599c7d"
+          },
+          "Version": "0.2.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "file_selector_linux@0.9.4+1",
+            "file_selector_platform_interface@2.7.0",
+            "flutter@0.0.0",
+            "image_picker_platform_interface@2.11.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "image_picker_macos@0.2.2+1",
+          "Name": "image_picker_macos",
+          "Identifier": {
+            "PURL": "pkg:pub/image_picker_macos@0.2.2%2B1",
+            "UID": "49e84f6a09f6c0be"
+          },
+          "Version": "0.2.2+1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "file_selector_platform_interface@2.7.0",
+            "flutter@0.0.0",
+            "image_picker_platform_interface@2.11.1",
+            "file_selector_macos@0.9.5+1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "image_picker_platform_interface@2.11.1",
+          "Name": "image_picker_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/image_picker_platform_interface@2.11.1",
+            "UID": "28af114a8a627b77"
+          },
+          "Version": "2.11.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "cross_file@0.3.5+5",
+            "flutter@0.0.0",
+            "http@1.6.0",
+            "plugin_platform_interface@2.1.8"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "image_picker_windows@0.2.2",
+          "Name": "image_picker_windows",
+          "Identifier": {
+            "PURL": "pkg:pub/image_picker_windows@0.2.2",
+            "UID": "98e8b5e4c3be5fb"
+          },
+          "Version": "0.2.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "file_selector_platform_interface@2.7.0",
+            "file_selector_windows@0.9.3+6",
+            "flutter@0.0.0",
+            "image_picker_platform_interface@2.11.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "jni@1.1.0",
+          "Name": "jni",
+          "Identifier": {
+            "PURL": "pkg:pub/jni@1.1.0",
+            "UID": "80eecc5ab1cb1667"
+          },
+          "Version": "1.1.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "jni_util@1.0.0",
+            "meta@1.17.0",
+            "package_config@3.0.0",
+            "path@1.9.1",
+            "plugin_platform_interface@2.1.8",
+            "args@2.7.0",
+            "collection@1.19.1",
+            "ffi@2.2.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "jni_flutter@1.0.3",
+          "Name": "jni_flutter",
+          "Identifier": {
+            "PURL": "pkg:pub/jni_flutter@1.0.3",
+            "UID": "e63bd18982630387"
+          },
+          "Version": "1.0.3",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "jni@1.1.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "jni_util@1.0.0",
+          "Name": "jni_util",
+          "Identifier": {
+            "PURL": "pkg:pub/jni_util@1.0.0",
+            "UID": "2fcb89baa09596bc"
+          },
+          "Version": "1.0.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "path@1.9.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "js@0.6.7",
+          "Name": "js",
+          "Identifier": {
+            "PURL": "pkg:pub/js@0.6.7",
+            "UID": "99c6475dbf2871a5"
+          },
+          "Version": "0.6.7",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "leak_tracker@11.0.2",
+          "Name": "leak_tracker",
+          "Identifier": {
+            "PURL": "pkg:pub/leak_tracker@11.0.2",
+            "UID": "ec7aa23fae64d47f"
+          },
+          "Version": "11.0.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "clock@1.1.2",
+            "collection@1.19.1",
+            "meta@1.17.0",
+            "path@1.9.1",
+            "vm_service@15.3.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "leak_tracker_flutter_testing@3.0.10",
+          "Name": "leak_tracker_flutter_testing",
+          "Identifier": {
+            "PURL": "pkg:pub/leak_tracker_flutter_testing@3.0.10",
+            "UID": "738ad6bed2dd6948"
+          },
+          "Version": "3.0.10",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "leak_tracker@11.0.2",
+            "leak_tracker_testing@3.0.2",
+            "matcher@0.12.19",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "leak_tracker_testing@3.0.2",
+          "Name": "leak_tracker_testing",
+          "Identifier": {
+            "PURL": "pkg:pub/leak_tracker_testing@3.0.2",
+            "UID": "5d4e88075e873e59"
+          },
+          "Version": "3.0.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0",
+            "leak_tracker@11.0.2",
+            "matcher@0.12.19"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "lints@6.1.0",
+          "Name": "lints",
+          "Identifier": {
+            "PURL": "pkg:pub/lints@6.1.0",
+            "UID": "e4cd51bf51b24317"
+          },
+          "Version": "6.1.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "logging@1.3.0",
+          "Name": "logging",
+          "Identifier": {
+            "PURL": "pkg:pub/logging@1.3.0",
+            "UID": "e8acde3efe96103c"
+          },
+          "Version": "1.3.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "matcher@0.12.19",
+          "Name": "matcher",
+          "Identifier": {
+            "PURL": "pkg:pub/matcher@0.12.19",
+            "UID": "63fec6f03bd0e6ed"
+          },
+          "Version": "0.12.19",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "async@2.13.1",
+            "meta@1.17.0",
+            "stack_trace@1.12.1",
+            "term_glyph@1.2.2",
+            "test_api@0.7.10"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "material_color_utilities@0.13.0",
+          "Name": "material_color_utilities",
+          "Identifier": {
+            "PURL": "pkg:pub/material_color_utilities@0.13.0",
+            "UID": "ac311201720a71b6"
+          },
+          "Version": "0.13.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "meta@1.17.0",
+          "Name": "meta",
+          "Identifier": {
+            "PURL": "pkg:pub/meta@1.17.0",
+            "UID": "1fac087a2ccc81d4"
+          },
+          "Version": "1.17.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "mime@2.1.0",
+          "Name": "mime",
+          "Identifier": {
+            "PURL": "pkg:pub/mime@2.1.0",
+            "UID": "4e31eedc7eef8f19"
+          },
+          "Version": "2.1.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "nm@0.5.0",
+          "Name": "nm",
+          "Identifier": {
+            "PURL": "pkg:pub/nm@0.5.0",
+            "UID": "5a4c310608f5a19e"
+          },
+          "Version": "0.5.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "dbus@0.7.15"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "objective_c@9.5.0",
+          "Name": "objective_c",
+          "Identifier": {
+            "PURL": "pkg:pub/objective_c@9.5.0",
+            "UID": "ccadaf32a9504376"
+          },
+          "Version": "9.5.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "ffi@2.2.0",
+            "hooks@2.0.2",
+            "logging@1.3.0",
+            "meta@1.17.0",
+            "pub_semver@2.2.1",
+            "code_assets@1.2.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "package_config@3.0.0",
+          "Name": "package_config",
+          "Identifier": {
+            "PURL": "pkg:pub/package_config@3.0.0",
+            "UID": "f5ef3eb23d49f0d9"
+          },
+          "Version": "3.0.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "package_info_plus@9.0.1",
+          "Name": "package_info_plus",
+          "Identifier": {
+            "PURL": "pkg:pub/package_info_plus@9.0.1",
+            "UID": "ba2d1f56824993e6"
+          },
+          "Version": "9.0.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "path@1.9.1",
+            "package_info_plus_platform_interface@3.2.1",
+            "web@1.1.1",
+            "win32@5.15.0",
+            "ffi@2.2.0",
+            "flutter_web_plugins@0.0.0",
+            "http@1.6.0",
+            "clock@1.1.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "package_info_plus_platform_interface@3.2.1",
+          "Name": "package_info_plus_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/package_info_plus_platform_interface@3.2.1",
+            "UID": "879e2f50bb631871"
+          },
+          "Version": "3.2.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "plugin_platform_interface@2.1.8"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "path@1.9.1",
+          "Name": "path",
+          "Identifier": {
+            "PURL": "pkg:pub/path@1.9.1",
+            "UID": "ba2d9be00eef0351"
+          },
+          "Version": "1.9.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "path_provider@2.1.6",
+          "Name": "path_provider",
+          "Identifier": {
+            "PURL": "pkg:pub/path_provider@2.1.6",
+            "UID": "1459ad8dcb44c8f4"
+          },
+          "Version": "2.1.6",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "path_provider_platform_interface@2.1.3",
+            "path_provider_windows@2.3.0",
+            "flutter@0.0.0",
+            "path_provider_android@2.3.1",
+            "path_provider_foundation@2.6.0",
+            "path_provider_linux@2.2.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "path_provider_android@2.3.1",
+          "Name": "path_provider_android",
+          "Identifier": {
+            "PURL": "pkg:pub/path_provider_android@2.3.1",
+            "UID": "d3b591c0375fc5a6"
+          },
+          "Version": "2.3.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "jni@1.1.0",
+            "jni_flutter@1.0.3",
+            "path_provider_platform_interface@2.1.3"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "path_provider_foundation@2.6.0",
+          "Name": "path_provider_foundation",
+          "Identifier": {
+            "PURL": "pkg:pub/path_provider_foundation@2.6.0",
+            "UID": "b3c113fe13cfd37a"
+          },
+          "Version": "2.6.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "ffi@2.2.0",
+            "flutter@0.0.0",
+            "objective_c@9.5.0",
+            "path_provider_platform_interface@2.1.3"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "path_provider_linux@2.2.2",
+          "Name": "path_provider_linux",
+          "Identifier": {
+            "PURL": "pkg:pub/path_provider_linux@2.2.2",
+            "UID": "c0c1c1bd4bd66981"
+          },
+          "Version": "2.2.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "ffi@2.2.0",
+            "flutter@0.0.0",
+            "path@1.9.1",
+            "path_provider_platform_interface@2.1.3",
+            "xdg_directories@1.1.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "path_provider_platform_interface@2.1.3",
+          "Name": "path_provider_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/path_provider_platform_interface@2.1.3",
+            "UID": "d41e6eabc1aacf17"
+          },
+          "Version": "2.1.3",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "platform@3.1.6",
+            "plugin_platform_interface@2.1.8"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "path_provider_windows@2.3.0",
+          "Name": "path_provider_windows",
+          "Identifier": {
+            "PURL": "pkg:pub/path_provider_windows@2.3.0",
+            "UID": "4e2da01743e6219b"
+          },
+          "Version": "2.3.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "path@1.9.1",
+            "path_provider_platform_interface@2.1.3",
+            "ffi@2.2.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "petitparser@7.0.2",
+          "Name": "petitparser",
+          "Identifier": {
+            "PURL": "pkg:pub/petitparser@7.0.2",
+            "UID": "b52f6febb7ec562"
+          },
+          "Version": "7.0.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "platform@3.1.6",
+          "Name": "platform",
+          "Identifier": {
+            "PURL": "pkg:pub/platform@3.1.6",
+            "UID": "25de985261d121d8"
+          },
+          "Version": "3.1.6",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "plugin_platform_interface@2.1.8",
+          "Name": "plugin_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/plugin_platform_interface@2.1.8",
+            "UID": "e64da24f1b61d0fe"
+          },
+          "Version": "2.1.8",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "pub_semver@2.2.1",
+          "Name": "pub_semver",
+          "Identifier": {
+            "PURL": "pkg:pub/pub_semver@2.2.1",
+            "UID": "bf0aaee6eb6bcbd4"
+          },
+          "Version": "2.2.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "record_use@0.6.0",
+          "Name": "record_use",
+          "Identifier": {
+            "PURL": "pkg:pub/record_use@0.6.0",
+            "UID": "844acde4bcdf0c1d"
+          },
+          "Version": "0.6.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "meta@1.17.0",
+            "pub_semver@2.2.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "riverpod@2.6.1",
+          "Name": "riverpod",
+          "Identifier": {
+            "PURL": "pkg:pub/riverpod@2.6.1",
+            "UID": "ec8b40ab5f4bde31"
+          },
+          "Version": "2.6.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "meta@1.17.0",
+            "stack_trace@1.12.1",
+            "state_notifier@1.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "sentry@8.14.2",
+          "Name": "sentry",
+          "Identifier": {
+            "PURL": "pkg:pub/sentry@8.14.2",
+            "UID": "a2cee8adb2d0aca2"
+          },
+          "Version": "8.14.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "http@1.6.0",
+            "meta@1.17.0",
+            "stack_trace@1.12.1",
+            "uuid@4.6.0",
+            "collection@1.19.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "sky_engine@0.0.0",
+          "Name": "sky_engine",
+          "Identifier": {
+            "PURL": "pkg:pub/sky_engine@0.0.0",
+            "UID": "51956a8bb09a501c"
+          },
+          "Version": "0.0.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "source_span@1.10.2",
+          "Name": "source_span",
+          "Identifier": {
+            "PURL": "pkg:pub/source_span@1.10.2",
+            "UID": "d32a97ee8e6fe016"
+          },
+          "Version": "1.10.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "path@1.9.1",
+            "term_glyph@1.2.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "stack_trace@1.12.1",
+          "Name": "stack_trace",
+          "Identifier": {
+            "PURL": "pkg:pub/stack_trace@1.12.1",
+            "UID": "42fbb362e5a806cd"
+          },
+          "Version": "1.12.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "path@1.9.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "state_notifier@1.0.0",
+          "Name": "state_notifier",
+          "Identifier": {
+            "PURL": "pkg:pub/state_notifier@1.0.0",
+            "UID": "9d4289d3d20b7ba0"
+          },
+          "Version": "1.0.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "stream_channel@2.1.4",
+          "Name": "stream_channel",
+          "Identifier": {
+            "PURL": "pkg:pub/stream_channel@2.1.4",
+            "UID": "82cc3a6811baee04"
+          },
+          "Version": "2.1.4",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "async@2.13.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "stream_transform@2.1.2",
+          "Name": "stream_transform",
+          "Identifier": {
+            "PURL": "pkg:pub/stream_transform@2.1.2",
+            "UID": "fc106970c71d1b1c"
+          },
+          "Version": "2.1.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "string_scanner@1.4.1",
+          "Name": "string_scanner",
+          "Identifier": {
+            "PURL": "pkg:pub/string_scanner@1.4.1",
+            "UID": "3333fe765277730a"
+          },
+          "Version": "1.4.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "source_span@1.10.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "term_glyph@1.2.2",
+          "Name": "term_glyph",
+          "Identifier": {
+            "PURL": "pkg:pub/term_glyph@1.2.2",
+            "UID": "4da5e5d234f44f1a"
+          },
+          "Version": "1.2.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "test_api@0.7.10",
+          "Name": "test_api",
+          "Identifier": {
+            "PURL": "pkg:pub/test_api@0.7.10",
+            "UID": "df3cafc09f203f20"
+          },
+          "Version": "0.7.10",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "meta@1.17.0",
+            "stack_trace@1.12.1",
+            "async@2.13.1",
+            "boolean_selector@2.1.2",
+            "source_span@1.10.2",
+            "stream_channel@2.1.4",
+            "string_scanner@1.4.1",
+            "term_glyph@1.2.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "typed_data@1.4.0",
+          "Name": "typed_data",
+          "Identifier": {
+            "PURL": "pkg:pub/typed_data@1.4.0",
+            "UID": "a95a89509de3afea"
+          },
+          "Version": "1.4.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "url_launcher@6.3.3",
+          "Name": "url_launcher",
+          "Identifier": {
+            "PURL": "pkg:pub/url_launcher@6.3.3",
+            "UID": "95587cb736f85110"
+          },
+          "Version": "6.3.3",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "url_launcher_platform_interface@2.3.2",
+            "url_launcher_web@2.4.3",
+            "url_launcher_windows@3.1.6",
+            "flutter@0.0.0",
+            "url_launcher_android@6.3.30",
+            "url_launcher_ios@6.4.2",
+            "url_launcher_linux@3.2.3",
+            "url_launcher_macos@3.2.6"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "url_launcher_android@6.3.30",
+          "Name": "url_launcher_android",
+          "Identifier": {
+            "PURL": "pkg:pub/url_launcher_android@6.3.30",
+            "UID": "3bcdb50d135d5200"
+          },
+          "Version": "6.3.30",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "url_launcher_platform_interface@2.3.2",
+            "flutter@0.0.0",
+            "meta@1.17.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "url_launcher_ios@6.4.2",
+          "Name": "url_launcher_ios",
+          "Identifier": {
+            "PURL": "pkg:pub/url_launcher_ios@6.4.2",
+            "UID": "a2349ef98d1eb0ef"
+          },
+          "Version": "6.4.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "url_launcher_platform_interface@2.3.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "url_launcher_linux@3.2.3",
+          "Name": "url_launcher_linux",
+          "Identifier": {
+            "PURL": "pkg:pub/url_launcher_linux@3.2.3",
+            "UID": "6148fc5f44d1d1cf"
+          },
+          "Version": "3.2.3",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "url_launcher_platform_interface@2.3.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "url_launcher_macos@3.2.6",
+          "Name": "url_launcher_macos",
+          "Identifier": {
+            "PURL": "pkg:pub/url_launcher_macos@3.2.6",
+            "UID": "b772ad529b1635a0"
+          },
+          "Version": "3.2.6",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "url_launcher_platform_interface@2.3.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "url_launcher_platform_interface@2.3.2",
+          "Name": "url_launcher_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/url_launcher_platform_interface@2.3.2",
+            "UID": "8c551f2a54173728"
+          },
+          "Version": "2.3.2",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "plugin_platform_interface@2.1.8"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "url_launcher_web@2.4.3",
+          "Name": "url_launcher_web",
+          "Identifier": {
+            "PURL": "pkg:pub/url_launcher_web@2.4.3",
+            "UID": "38b1c30292012f35"
+          },
+          "Version": "2.4.3",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "flutter_web_plugins@0.0.0",
+            "url_launcher_platform_interface@2.3.2",
+            "web@1.1.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "url_launcher_windows@3.1.6",
+          "Name": "url_launcher_windows",
+          "Identifier": {
+            "PURL": "pkg:pub/url_launcher_windows@3.1.6",
+            "UID": "d689dc4428e2c891"
+          },
+          "Version": "3.1.6",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "url_launcher_platform_interface@2.3.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "uuid@4.6.0",
+          "Name": "uuid",
+          "Identifier": {
+            "PURL": "pkg:pub/uuid@4.6.0",
+            "UID": "8baa950ae0dea6b3"
+          },
+          "Version": "4.6.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "crypto@3.0.7",
+            "fixnum@1.1.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "vector_math@2.2.0",
+          "Name": "vector_math",
+          "Identifier": {
+            "PURL": "pkg:pub/vector_math@2.2.0",
+            "UID": "ea0d60b8227f1a2a"
+          },
+          "Version": "2.2.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "vm_service@15.3.0",
+          "Name": "vm_service",
+          "Identifier": {
+            "PURL": "pkg:pub/vm_service@15.3.0",
+            "UID": "65566bae4a6912fb"
+          },
+          "Version": "15.3.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "web@1.1.1",
+          "Name": "web",
+          "Identifier": {
+            "PURL": "pkg:pub/web@1.1.1",
+            "UID": "be36eb69c42f0d8b"
+          },
+          "Version": "1.1.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "webview_flutter@4.14.1",
+          "Name": "webview_flutter",
+          "Identifier": {
+            "PURL": "pkg:pub/webview_flutter@4.14.1",
+            "UID": "fe905d99563a9436"
+          },
+          "Version": "4.14.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "webview_flutter_android@4.12.0",
+            "webview_flutter_platform_interface@2.15.1",
+            "webview_flutter_wkwebview@3.25.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "webview_flutter_android@4.12.0",
+          "Name": "webview_flutter_android",
+          "Identifier": {
+            "PURL": "pkg:pub/webview_flutter_android@4.12.0",
+            "UID": "b6832306041a3ade"
+          },
+          "Version": "4.12.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0",
+            "webview_flutter_platform_interface@2.15.1",
+            "flutter@0.0.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "webview_flutter_platform_interface@2.15.1",
+          "Name": "webview_flutter_platform_interface",
+          "Identifier": {
+            "PURL": "pkg:pub/webview_flutter_platform_interface@2.15.1",
+            "UID": "a4dcd28498defb08"
+          },
+          "Version": "2.15.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "plugin_platform_interface@2.1.8"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "webview_flutter_wkwebview@3.25.1",
+          "Name": "webview_flutter_wkwebview",
+          "Identifier": {
+            "PURL": "pkg:pub/webview_flutter_wkwebview@3.25.1",
+            "UID": "594eea49637290c4"
+          },
+          "Version": "3.25.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "flutter@0.0.0",
+            "meta@1.17.0",
+            "path@1.9.1",
+            "webview_flutter_platform_interface@2.15.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "win32@5.15.0",
+          "Name": "win32",
+          "Identifier": {
+            "PURL": "pkg:pub/win32@5.15.0",
+            "UID": "1097b6234c3831b7"
+          },
+          "Version": "5.15.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "ffi@2.2.0"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "xdg_directories@1.1.0",
+          "Name": "xdg_directories",
+          "Identifier": {
+            "PURL": "pkg:pub/xdg_directories@1.1.0",
+            "UID": "810241907672bb44"
+          },
+          "Version": "1.1.0",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "meta@1.17.0",
+            "path@1.9.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "xml@7.0.1",
+          "Name": "xml",
+          "Identifier": {
+            "PURL": "pkg:pub/xml@7.0.1",
+            "UID": "2b82692555f10095"
+          },
+          "Version": "7.0.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "meta@1.17.0",
+            "petitparser@7.0.2"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        },
+        {
+          "ID": "yaml@3.1.4",
+          "Name": "yaml",
+          "Identifier": {
+            "PURL": "pkg:pub/yaml@3.1.4",
+            "UID": "1dff47efa5a988cd"
+          },
+          "Version": "3.1.4",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "collection@1.19.1",
+            "source_span@1.10.2",
+            "string_scanner@1.4.1"
+          ],
+          "AnalyzedBy": "pubspec-lock"
+        }
+      ]
+    },
+    {
+      "Target": "apps/api/Dockerfile",
+      "Class": "config",
+      "Type": "dockerfile",
+      "MisconfSummary": {
+        "Successes": 20,
+        "Failures": 0
+      }
+    }
+  ]
+}

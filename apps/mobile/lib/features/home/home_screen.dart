@@ -8,6 +8,7 @@ import '../../core/network/api_client.dart';
 import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_widgets.dart';
+import '../../core/widgets/garment_card.dart';
 import '../location/location_controller.dart';
 import '../location/destination_screen.dart';
 
@@ -95,14 +96,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ref.invalidate(lastRecommendationProvider);
           },
           child: ListView(
-            padding: const EdgeInsets.all(AppTheme.spacingL),
+            padding: const EdgeInsets.all(AppTheme.spacingM),
             children: [
               _LocationLine(location: location),
-              TextButton.icon(
-                onPressed: () => context.push('/mannequin'),
-                icon: const Icon(Icons.accessibility_new),
-                label: const Text('Mon mannequin'),
-              ),
               const SizedBox(height: AppTheme.spacingM),
               weather.when(
                 data: (report) => report == null
@@ -120,9 +116,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               const SizedBox(height: AppTheme.spacingL),
               FilledButton.icon(
-                icon: const Icon(Icons.auto_awesome),
+                icon: const Icon(Icons.dry_cleaning_outlined),
                 label: const Text('Choisir mon outfit  →'),
                 onPressed: () => context.push('/outfit-flow'),
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.push('/mannequin'),
+                      icon: const Icon(Icons.accessibility_new),
+                      label: const Text('Mon mannequin'),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.go('/?tab=wardrobe'),
+                      icon: const Icon(Icons.checkroom_outlined),
+                      label: const Text('Ma garde-robe'),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: AppTheme.spacingXl),
               SectionTitle(
@@ -385,24 +401,11 @@ class _LastRecommendationCard extends ConsumerWidget {
                             ),
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child:
-                              garment != null &&
-                                  garment.images.isNotEmpty &&
-                                  garment.images.first.downloadUrl != null
-                              ? Image.network(
-                                  garment.images.first.downloadUrl!,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (_, _, _) =>
-                                      const Icon(Icons.broken_image_outlined),
+                          child: garment == null
+                              ? const Center(
+                                  child: Icon(Icons.checkroom_outlined),
                                 )
-                              : Center(
-                                  child: Text(
-                                    garment?.name ?? 'Vêtement indisponible',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleLarge,
-                                  ),
-                                ),
+                              : GarmentVisual(garment: garment),
                         ),
                       );
                     },

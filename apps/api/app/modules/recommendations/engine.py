@@ -72,7 +72,7 @@ class ScoredOutfit:
 # Warmth a garment layer adds, indexed by warmth_level 1..5 (approx. °C comfort shift).
 _WARMTH_CONTRIBUTION = {1: 0.0, 2: 1.5, 3: 3.0, 4: 5.0, 5: 8.0}
 
-_LAYER_GROUPS = {"coat", "puffer", "jacket", "blazer", "cardigan", "hoodie", "sweater"}
+_LAYER_GROUPS = {"coat", "puffer", "jacket", "blazer", "cardigan"}
 
 
 def _clamp01(x: float) -> float:
@@ -92,9 +92,16 @@ def score_garment(g: EngineGarment, ctx: EngineContext) -> dict[str, float]:
     # the hot line at the warmest moment of the window.
     warmth = _WARMTH_CONTRIBUTION.get(g.warmth_level, 3.0)
     needed = max(0.0, cold_line - w.min_feels_like_c)
-    if g.group in {"bottom", "shoes", "head", "wrist", "other"}:
-        # These groups matter less for core warmth; score neutral-to-good.
-        temperature_score = 0.8 if g.group != "shoes" else 0.85
+    if g.group in {"bottom", "shoes", "head"}:
+        # Avoid shorts in the cold and heavy trousers/bonnets in hot weather.
+        if w.max_feels_like_c > hot_line:
+            temperature_score = _clamp01(1.0 - (g.warmth_level - 1) * 0.2)
+        elif w.min_feels_like_c < cold_line:
+            temperature_score = min(1.0, g.warmth_level / 4.0)
+        else:
+            temperature_score = 0.8 if g.group != "shoes" else 0.85
+    elif g.group in {"wrist", "other"}:
+        temperature_score = 0.8
     else:
         overshoot = max(0.0, (w.max_feels_like_c + warmth) - (hot_line + 6.0))
         coverage = _clamp01(warmth / needed) if needed > 0 else _clamp01(1.0 - warmth / 12.0)
@@ -133,9 +140,9 @@ def score_garment(g: EngineGarment, ctx: EngineContext) -> dict[str, float]:
         recently_worn_penalty = 0.35
 
     activity_score = 0.75
-    formal_activities = {"work", "restaurant", "date", "formal_event"}
+    formal_activities = {"work", "restaurant", "date", "formal_event", "evening"}
     if ctx.activity in formal_activities:
-        if g.subcategory in {"blazer", "shirt", "dress_shoes", "dress", "trousers", "blouse"}:
+        if g.subcategory in {"blazer", "shirt", "polo", "dress_shoes", "dress", "trousers", "blouse"}:
             activity_score = 1.0
         elif g.subcategory in {"joggers", "hoodie", "sandals"}:
             activity_score = 0.3
@@ -197,12 +204,21 @@ def _pick_layer(garments: list[EngineGarment], ctx: EngineContext) -> EngineGarm
     """Choose an outer layer when the window is cold/rainy/windy."""
     w = ctx.weather
     cold_line = ctx.prefs.cold_threshold_celsius + ctx.prefs.learned_warmth_offset
-    needs_layer = w.min_feels_like_c < cold_line or w.max_precip_probability >= 0.5 or w.max_wind_kmh >= 40
+    needs_layer = (
+        w.min_feels_like_c < cold_line
+        or w.max_precip_probability >= 0.5
+        or w.max_precip_mm >= 2
+        or w.max_wind_kmh >= 40
+    )
     if not needs_layer:
         return None
     layers = [g for g in garments if g.group == "top" and g.subcategory in _LAYER_GROUPS]
     if not layers:
         return None
+    if w.max_precip_probability >= 0.5 or w.max_precip_mm >= 2:
+        waterproof_layers = [g for g in layers if g.waterproof]
+        if waterproof_layers:
+            layers = waterproof_layers
     return max(layers, key=lambda g: garment_total(score_garment(g, ctx)))
 
 
@@ -218,7 +234,12 @@ def recommend(garments: list[EngineGarment], ctx: EngineContext, max_outfits: in
     for group in by_group.values():
         group.sort(key=lambda g: garment_total(score_garment(g, ctx)), reverse=True)
 
-    tops = [g for g in by_group.get("top", []) if g.subcategory not in _LAYER_GROUPS][:4]
+    tops = [g for g in by_group.get("top", []) if g.subcategory not in _LAYER_GROUPS]
+    if ctx.activity in {"work", "restaurant", "date", "formal_event", "evening"}:
+        formal_tops = [g for g in tops if g.subcategory in {"shirt", "polo", "blouse"}]
+        if formal_tops:
+            tops = formal_tops
+    tops = tops[:4]
     dresses = [g for g in by_group.get("bottom", []) if g.subcategory == "dress"][:2]
     bottoms = [g for g in by_group.get("bottom", []) if g.subcategory != "dress"][:4]
     shoes = by_group.get("shoes", [])[:4]

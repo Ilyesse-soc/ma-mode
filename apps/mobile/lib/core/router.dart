@@ -10,6 +10,7 @@ import '../features/auth/screens/account_action_screen.dart';
 import '../features/history/history_screen.dart';
 import '../features/home/home_shell.dart';
 import '../features/onboarding/onboarding_screen.dart';
+import '../features/onboarding/functional_onboarding_screen.dart';
 import '../features/preferences/preferences_screen.dart';
 import '../features/recommendation/outfit_flow_screen.dart';
 import '../features/silhouette/silhouette_screen.dart';
@@ -41,6 +42,26 @@ final routerProvider = Provider<GoRouter>((ref) {
         return isPublic ? null : '/splash';
       }
       if (auth.status == AuthStatus.guest && !isPublic) return '/auth/welcome';
+      final pending = auth.user?.pendingOnboardingStep;
+      if (auth.status == AuthStatus.authenticated &&
+          location == '/onboarding') {
+        return pending == 'preferences'
+            ? '/preferences?from=register'
+            : pending == 'consents'
+            ? '/onboarding/functional'
+            : '/';
+      }
+      if (auth.status == AuthStatus.authenticated &&
+          pending != null &&
+          location != '/preferences' &&
+          location != '/onboarding/functional' &&
+          !location.startsWith('/privacy') &&
+          location != '/splash' &&
+          location != '/auth/action') {
+        return pending == 'preferences'
+            ? '/preferences?from=register'
+            : '/onboarding/functional';
+      }
       if (auth.status == AuthStatus.authenticated &&
           onAuthPage &&
           location != '/auth/action') {
@@ -53,6 +74,10 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
       GoRoute(path: '/onboarding', builder: (_, _) => const OnboardingScreen()),
+      GoRoute(
+        path: '/onboarding/functional',
+        builder: (_, _) => const FunctionalOnboardingScreen(),
+      ),
       GoRoute(path: '/auth/welcome', builder: (_, _) => const WelcomeScreen()),
       GoRoute(path: '/auth/login', builder: (_, _) => const LoginScreen()),
       GoRoute(

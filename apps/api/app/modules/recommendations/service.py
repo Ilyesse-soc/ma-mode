@@ -51,12 +51,13 @@ async def generate_recommendations(
     now = int(time.time())
     end_ts = (arrival_ts + 4 * 3600) if arrival_ts else now + DEFAULT_TRIP_HOURS * 3600
 
-    origin_report = await fetch_and_snapshot(db, user_id, origin_lat, origin_lon, origin_label)
+    snapshot_ids: list[int] = []
+    origin_report = await fetch_and_snapshot(db, user_id, origin_lat, origin_lon, origin_label, snapshot_ids)
     points: list[dict] = [vars(p) for p in origin_report.hourly] or [vars(origin_report.current)]
 
     if destination_lat is not None and destination_lon is not None:
         dest_report = await fetch_and_snapshot(
-            db, user_id, destination_lat, destination_lon, destination_label
+            db, user_id, destination_lat, destination_lon, destination_label, snapshot_ids
         )
         # Consider the destination from the arrival time onward.
         points += [vars(p) for p in dest_report.hourly]
@@ -123,9 +124,11 @@ async def generate_recommendations(
         destination_label=destination_label,
         activity=activity,
         weather_summary={
+            "weather_snapshot_id": snapshot_ids[-1] if snapshot_ids else None,
             "min_feels_like_c": window.min_feels_like_c,
             "max_feels_like_c": window.max_feels_like_c,
             "max_precip_probability": window.max_precip_probability,
+            "max_precip_mm": window.max_precip_mm,
             "max_wind_kmh": window.max_wind_kmh,
         },
     )
@@ -150,6 +153,7 @@ async def record_feedback(
     recommendation_id: uuid.UUID,
     action: FeedbackAction,
     garment_id: uuid.UUID | None,
+    reason: str | None = None,
 ) -> None:
     recommendation = await db.scalar(
         select(Recommendation).where(
@@ -166,7 +170,11 @@ async def record_feedback(
             raise not_found("garment")
     db.add(
         RecommendationFeedback(
-            recommendation_id=recommendation.id, user_id=user_id, action=action, garment_id=garment_id
+            recommendation_id=recommendation.id,
+            user_id=user_id,
+            action=action,
+            garment_id=garment_id,
+            reason=reason,
         )
     )
     if action == FeedbackAction.LIKE:
@@ -175,10 +183,11 @@ async def record_feedback(
         recommendation.accepted = False
 
     # Transparent preference learning: explicit, bounded, user-resettable.
-    if action in {FeedbackAction.TOO_COLD, FeedbackAction.TOO_HOT}:
+    thermal_action = reason if reason in {"too_cold", "too_hot"} else action
+    if thermal_action in {FeedbackAction.TOO_COLD, FeedbackAction.TOO_HOT}:
         prefs = await db.scalar(select(UserPreference).where(UserPreference.user_id == user_id))
         if prefs is not None:
-            delta = 1.0 if action == FeedbackAction.TOO_COLD else -1.0
+            delta = 1.0 if thermal_action == FeedbackAction.TOO_COLD else -1.0
             prefs.learned_warmth_offset = max(-5.0, min(5.0, prefs.learned_warmth_offset + delta))
 
 
