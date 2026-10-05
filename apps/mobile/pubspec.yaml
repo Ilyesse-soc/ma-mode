@@ -7,6 +7,8 @@ environment:
   sdk: ^3.11.1
 
 dependencies:
+  dressly_intro_assets:
+    path: ../../assets
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
@@ -54,7 +56,6 @@ flutter:
   assets:
     - assets/fonts/OFL.txt
     - assets/legal/
-    - assets/image/
     - assets/3d/mannequins/
     - assets/3d/clothing/
     - assets/3d/environments/

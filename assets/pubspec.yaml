@@ -1,0 +1,15 @@
+name: dressly_intro_assets
+description: Local Dressly splash and onboarding backgrounds.
+version: 1.0.0
+publish_to: none
+environment:
+  sdk: ^3.11.1
+dependencies:
+  flutter:
+    sdk: flutter
+flutter:
+  assets:
+    - images/bording1.png
+    - images/boarding2.png
+    - images/boarding3.png
+    - images/boarding4.png

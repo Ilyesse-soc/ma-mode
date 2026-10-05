@@ -5,8 +5,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/providers.dart';
+import '../onboarding/onboarding_page.dart';
 
-/// Splash premium: logo, baseline, barre de progression — puis onboarding
+/// Splash premium: titre éditorial et baseline — puis onboarding
 /// (premier lancement) ou auth/home selon la session.
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -18,9 +19,11 @@ class SplashScreen extends ConsumerStatefulWidget {
 class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   bool _animationDone = false;
+  bool _imagesReady = false;
+  bool _preloading = false;
 
   void _navigate() {
-    if (!_animationDone || !mounted) return;
+    if (!_animationDone || !_imagesReady || !mounted) return;
     final auth = ref.read(authControllerProvider);
     if (auth.status == AuthStatus.unknown) return;
     final seen =
@@ -36,7 +39,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 1400),
+    duration: const Duration(milliseconds: 300),
   )..forward();
 
   @override
@@ -44,9 +47,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     super.initState();
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
-        _animationDone = true;
-        _navigate();
+        Future<void>.delayed(const Duration(milliseconds: 700), () {
+          if (!mounted) return;
+          _animationDone = true;
+          _navigate();
+        });
       }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_preloading) return;
+    _preloading = true;
+    IntroAssets.preload(context).then((_) {
+      if (!mounted) return;
+      _imagesReady = true;
+      _navigate();
     });
   }
 
@@ -64,8 +82,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset('assets/image/boarding1.png', fit: BoxFit.cover),
-          const ColoredBox(color: Color(0x66000000)),
+          const IntroBackground(image: IntroAssets.splash),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(AppTheme.spacingXl),
@@ -81,7 +98,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           'Dressly',
                           style: theme.textTheme.displayMedium?.copyWith(
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Georgia',
+                            fontFamily: 'Inter',
+                            fontSize: 52,
+                            height: 1.1,
+                            color: Colors.white,
                             letterSpacing: -0.5,
                           ),
                           textAlign: TextAlign.center,
@@ -90,7 +110,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         Text(
                           'Ta garde-robe,\ndes tenues parfaites.',
                           style: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.colorScheme.secondary,
+                            color: const Color(0xFFE3DFD8),
                             height: 1.4,
                           ),
                           textAlign: TextAlign.center,
@@ -99,17 +119,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     ),
                   ),
                   const Spacer(flex: 4),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(
-                      minHeight: 3,
-                      backgroundColor:
-                          theme.colorScheme.surfaceContainerHighest,
-                      valueColor: AlwaysStoppedAnimation(
-                        theme.colorScheme.primary,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

@@ -10,9 +10,10 @@
   },
   "flutter": {
     "analyze": "No issues found",
-    "tests_passed": 35,
+    "tests_passed": 37,
     "evidence": "executed command output",
-    "web_build": "passed (exit code 0, JavaScript; WASM dry-run warning documented)"
+    "web_build": "passed (exit code 0, JavaScript; WASM dry-run warning documented)",
+    "onboarding_browser_report": "ONBOARDING_BROWSER_CHECK.json"
   },
   "bandit_findings": 0,
   "semgrep_findings": 0,

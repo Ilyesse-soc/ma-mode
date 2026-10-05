@@ -1,0 +1,38 @@
+{
+  "viewport": "390x844",
+  "resources": [
+    {
+      "file": "bording1.png",
+      "bytes": 352102
+    },
+    {
+      "file": "boarding2.png",
+      "bytes": 437754
+    },
+    {
+      "file": "boarding3.png",
+      "bytes": 414799
+    },
+    {
+      "file": "boarding4.png",
+      "bytes": 397326
+    }
+  ],
+  "captures": [
+    {
+      "page": 1,
+      "content": "Une garde-robe intelligente\nScanne, ajoute, organise et laisse l’IA créer tes tenues.\nSuivant\nPasser\nPage 1 sur 3"
+    },
+    {
+      "page": 2,
+      "content": "Des recommandations\nAdaptées à la météo, tes activités et ton style.\nSuivant\nPasser\nPage 2 sur 3"
+    },
+    {
+      "page": 3,
+      "content": "Partout dans le monde\nAjoute une destination et obtiens des tenues adaptées.\nCommencer\nPasser\nPage 3 sur 3"
+    }
+  ],
+  "authReached": true,
+  "javascriptErrors": [],
+  "skipReachedAuth": true
+}
