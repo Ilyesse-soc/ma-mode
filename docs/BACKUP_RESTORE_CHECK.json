@@ -1,0 +1,9 @@
+{
+  "scope": "local PostgreSQL only",
+  "algorithm": "AES-256-GCM",
+  "restored_from_encrypted_archive": true,
+  "catalog_rows": 39,
+  "schema_revision": "verify_expiry_20261005",
+  "sha256_encrypted_archive": "52c73521965ae3adcbbd4d701bec56d7129970a00a84bc81fb8392c96f389b0c",
+  "production_backup_verified": false
+}

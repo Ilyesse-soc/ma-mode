@@ -1,0 +1,121 @@
+{
+  "scope": "real local PostgreSQL, Redis, MinIO and external providers; synthetic test images",
+  "checks": [
+    {
+      "flow": "register / authenticated empty wardrobe",
+      "passed": true
+    },
+    {
+      "flow": "female real profile / served GLB",
+      "passed": true
+    },
+    {
+      "flow": "male real profile / served GLB",
+      "passed": true
+    },
+    {
+      "flow": "save / reload preferences",
+      "passed": true
+    },
+    {
+      "flow": "manual actual garments / detail / wardrobe",
+      "passed": true
+    },
+    {
+      "flow": "live FREE UPC known",
+      "passed": true,
+      "http_status": 200,
+      "identification_status": "candidates",
+      "candidates": 1
+    },
+    {
+      "flow": "owned database barcode cache",
+      "passed": true
+    },
+    {
+      "flow": "live FREE UPC unknown",
+      "passed": true,
+      "http_status": 200,
+      "identification_status": "not_found",
+      "candidates": 0
+    },
+    {
+      "flow": "explicit AI consent",
+      "passed": true
+    },
+    {
+      "flow": "real label image / private S3",
+      "passed": true
+    },
+    {
+      "flow": "live external AI label",
+      "passed": true,
+      "http_status": 200,
+      "identification_status": "matched",
+      "candidates": 6,
+      "error_code": null
+    },
+    {
+      "flow": "user confirms label candidate",
+      "passed": true
+    },
+    {
+      "flow": "real garment image / private S3",
+      "passed": true
+    },
+    {
+      "flow": "live external AI photo",
+      "passed": true,
+      "http_status": 200,
+      "identification_status": "candidates",
+      "candidates": 1,
+      "error_code": null
+    },
+    {
+      "flow": "user confirms photo candidate",
+      "passed": true
+    },
+    {
+      "flow": "live IGN/BAN Poissy / Yvelines",
+      "passed": true
+    },
+    {
+      "flow": "save / reload destination",
+      "passed": true
+    },
+    {
+      "flow": "live precise Poissy weather",
+      "passed": true
+    },
+    {
+      "flow": "real wardrobe / origin and destination weather / recommendation explanations",
+      "passed": true
+    },
+    {
+      "flow": "persisted feedback",
+      "passed": true
+    },
+    {
+      "flow": "save mannequin selection / wear / real history",
+      "passed": true
+    },
+    {
+      "flow": "actual ZIP data and photo export",
+      "passed": true
+    },
+    {
+      "flow": "logout revokes session",
+      "passed": true
+    },
+    {
+      "flow": "relogin / persisted wardrobe / history",
+      "passed": true
+    },
+    {
+      "flow": "temporary account erased / access revoked",
+      "passed": true
+    }
+  ],
+  "native_camera_gps_mobile_performance": "requires a physical device",
+  "ui_gestures_offline": "separate browser/widget checks"
+}

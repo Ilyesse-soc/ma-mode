@@ -1,0 +1,8 @@
+{
+  "scope": "real local PostgreSQL concurrent requests",
+  "concurrentRefreshStatuses": [
+    200,
+    401
+  ],
+  "successorAccessRevokedAfterReuse": true
+}

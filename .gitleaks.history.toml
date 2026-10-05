@@ -1,0 +1,8 @@
+title = "Dressly complete Git history secret scan"
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Official Python image public signing-key fingerprint, not a credential"
+regexTarget = "secret"
+regexes = ['''^7169605F62C751356D054A26A821E680E5FA6305$''']

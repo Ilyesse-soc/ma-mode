@@ -1,0 +1,18 @@
+title = "Dressly source secret scan"
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Generated artifacts and untracked runtime environments only; source remains scanned"
+# Official Python image public signing-key fingerprint, never a credential.
+regexTarget = "secret"
+regexes = ['''^7169605F62C751356D054A26A821E680E5FA6305$''']
+paths = [
+  '''(^|[\\/])\.tmp[\\/]''',
+  '''(^|[\\/])\.local[\\/]''',
+  '''(^|[\\/])\.venv[\\/]''',
+  '''(^|[\\/])\.dart_tool[\\/]''',
+  '''(^|[\\/])build[\\/]''',
+  '''(^|[\\/])\.env$''',
+  '''(^|[\\/])\.env\.(keys|local|development|production)$''',
+]

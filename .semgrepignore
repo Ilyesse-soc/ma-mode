@@ -1,0 +1,6 @@
+.tmp/
+.local/
+apps/api/.venv/
+apps/api/.pytest_cache/
+apps/mobile/build/
+apps/mobile/.dart_tool/

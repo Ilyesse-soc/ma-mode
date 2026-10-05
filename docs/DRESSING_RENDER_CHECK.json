@@ -1,0 +1,106 @@
+[
+  {
+    "name": "female",
+    "loadMs": "532",
+    "dimensions": {
+      "x": 0.5658729672431946,
+      "y": 1.7853796109557152,
+      "z": 0.3547313064336777,
+      "toString": {}
+    },
+    "center": {
+      "x": 0.0006645321846008301,
+      "y": 0.8742065615952015,
+      "z": 0.000627659261226654,
+      "toString": {}
+    },
+    "before": {
+      "theta": 0,
+      "radius": 3.6936970294966422
+    },
+    "after": {
+      "theta": 3.141592653589793,
+      "radius": 2.4624646863310944
+    },
+    "rotation": true,
+    "zoom": true,
+    "sweep": [
+      {
+        "degrees": 90,
+        "theta": 1.5707963267948966,
+        "passed": true
+      },
+      {
+        "degrees": 180,
+        "theta": 3.141592653589793,
+        "passed": true
+      },
+      {
+        "degrees": 270,
+        "theta": 4.71238898038469,
+        "passed": true
+      },
+      {
+        "degrees": 360,
+        "theta": 6.2858107743477705,
+        "passed": true
+      }
+    ],
+    "rotation360": true
+  },
+  {
+    "name": "male",
+    "loadMs": "218",
+    "dimensions": {
+      "x": 0.7282128930091858,
+      "y": 1.8455138616263866,
+      "z": 0.37279994785785675,
+      "toString": {}
+    },
+    "center": {
+      "x": -0.00019374489784240723,
+      "y": 0.9026167187839746,
+      "z": 0.0036485567688941956,
+      "toString": {}
+    },
+    "before": {
+      "theta": 0,
+      "radius": 3.8113950940379664
+    },
+    "after": {
+      "theta": 3.141592653589793,
+      "radius": 2.5409300626919773
+    },
+    "rotation": true,
+    "zoom": true,
+    "sweep": [
+      {
+        "degrees": 90,
+        "theta": 1.5707963267948966,
+        "passed": true
+      },
+      {
+        "degrees": 180,
+        "theta": 3.141592653589793,
+        "passed": true
+      },
+      {
+        "degrees": 270,
+        "theta": 4.71238898038469,
+        "passed": true
+      },
+      {
+        "degrees": 360,
+        "theta": 6.283185307179586,
+        "passed": true
+      }
+    ],
+    "rotation360": true
+  },
+  {
+    "name": "missing",
+    "state": "error",
+    "visible": true,
+    "retry": "Réessayer"
+  }
+]

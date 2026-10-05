@@ -1,0 +1,50 @@
+rules:
+  - id: sql-interpolation
+    languages: [python]
+    severity: ERROR
+    message: User data must use ORM or bound SQL parameters.
+    pattern-either:
+      - pattern: text(f"...")
+      - pattern: $DB.execute(f"...")
+      - pattern: text($QUERY % $VALUE)
+      - pattern: text($QUERY.format(...))
+  - id: insecure-tls
+    languages: [python]
+    severity: ERROR
+    message: Certificate verification must remain enabled.
+    pattern-either:
+      - pattern: $CLIENT(..., verify=False, ...)
+      - pattern: ssl._create_unverified_context(...)
+  - id: command-injection-shell
+    languages: [python]
+    severity: ERROR
+    message: Do not invoke a shell with application data.
+    pattern-either:
+      - pattern: subprocess.$FUNC(..., shell=True, ...)
+      - pattern: os.system(...)
+      - pattern: eval(...)
+      - pattern: exec(...)
+  - id: public-object-acl
+    languages: [python]
+    severity: ERROR
+    message: User objects must remain private.
+    pattern: $CLIENT.$METHOD(..., ACL="public-read", ...)
+  - id: token-in-logging
+    languages: [python]
+    severity: ERROR
+    message: Tokens and passwords must never reach logging calls.
+    patterns:
+      - pattern-either:
+          - pattern: $LOGGER.$METHOD(..., password=$VALUE, ...)
+          - pattern: $LOGGER.$METHOD(..., refresh_token=$VALUE, ...)
+          - pattern: $LOGGER.$METHOD(..., access_token=$VALUE, ...)
+      - metavariable-regex:
+          metavariable: $LOGGER
+          regex: '(^|.*\.)(log|logger|logging)$'
+  - id: insecure-deserialization
+    languages: [python]
+    severity: ERROR
+    message: Untrusted payloads may not be deserialized as executable objects.
+    pattern-either:
+      - pattern: pickle.loads(...)
+      - pattern: yaml.load(...)

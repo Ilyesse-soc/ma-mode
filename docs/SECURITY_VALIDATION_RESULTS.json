@@ -1,0 +1,50 @@
+{
+  "scope": "local application checks, no production certification",
+  "date": "2026-10-05",
+  "api": {
+    "pytest_passed": 103,
+    "ruff": "pass",
+    "mypy_source_files": 67,
+    "mypy": "pass",
+    "evidence": "executed command output"
+  },
+  "flutter": {
+    "analyze": "No issues found",
+    "tests_passed": 35,
+    "evidence": "executed command output",
+    "web_build": "passed (exit code 0, JavaScript; WASM dry-run warning documented)"
+  },
+  "bandit_findings": 0,
+  "semgrep_findings": 0,
+  "gitleaks_source_findings": 0,
+  "pip_audit_findings": 0,
+  "trivy_image_vulnerabilities": 0,
+  "trivy_filesystem_vulnerabilities": 0,
+  "production_gate": {
+    "exit_code": 1,
+    "output": [
+      "BLOCKED: Real Android release signing must be configured",
+      "BLOCKED: ENVIRONMENT must be production",
+      "BLOCKED: Security alert recipient must be configured",
+      "BLOCKED: Unresolved legal configuration: cgu.md",
+      "BLOCKED: Unresolved legal configuration: mentions-legales.md",
+      "BLOCKED: Unresolved legal configuration: privacy-policy.md"
+    ],
+    "expected_blocked": true
+  },
+  "production_infrastructure_verified": false,
+  "git_history_locally_available": true,
+  "local_runtime": {
+    "statuses": {
+      "app": 200,
+      "health": 200,
+      "readiness": 200
+    },
+    "temporary_test_accounts_remaining": 0,
+    "completed_cleanup_jobs": 37
+  },
+  "e2e_local": {
+    "report": "E2E_LOCAL_CHECK.json",
+    "checks_passed": 25
+  }
+}

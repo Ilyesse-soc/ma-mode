@@ -1,0 +1,54 @@
+name: dressly
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:?Set a verified PostgreSQL image digest}
+    environment:
+      POSTGRES_USER: dressly_admin
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?Set an admin password}
+      POSTGRES_DB: dressly
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ${POSTGRES_INIT_FILE:?Set the application-role init script}:/docker-entrypoint-initdb.d/10-app.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dressly_admin -d dressly"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    security_opt: ["no-new-privileges:true"]
+  minio:
+    image: ${MINIO_IMAGE:?Set an approved maintained S3-compatible server image digest}
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set storage admin user}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set storage admin password}
+    volumes: ["minio_data:/data"]
+    security_opt: ["no-new-privileges:true"]
+  redis:
+    image: ${REDIS_IMAGE:?Set a verified Redis image digest}
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?Set a Redis password}"]
+    security_opt: ["no-new-privileges:true"]
+  api:
+    build: ../apps/api
+    env_file: ${API_ENV_FILE:?Set the server-only environment file}
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_started}
+      minio: {condition: service_started}
+    ports: ["127.0.0.1:18000:8000"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+  cleanup:
+    build: ../apps/api
+    env_file: ${API_ENV_FILE:?Set the server-only environment file}
+    command: ["python", "-m", "scripts.cleanup", "--loop"]
+    depends_on:
+      api: {condition: service_healthy}
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+volumes:
+  postgres_data:
+  minio_data:

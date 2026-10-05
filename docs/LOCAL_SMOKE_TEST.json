@@ -1,0 +1,36 @@
+[
+  {
+    "flow": "register / profile / garments CRUD",
+    "passed": true
+  },
+  {
+    "flow": "real photo upload / metadata stripping / private S3 / signed download / IDOR",
+    "passed": true
+  },
+  {
+    "flow": "real presigned POST / quarantine / attachment sanitation",
+    "passed": true
+  },
+  {
+    "flow": "outfit save / wear / actual history",
+    "passed": true
+  },
+  {
+    "flow": "actual ZIP export",
+    "passed": true
+  },
+  {
+    "flow": "live Open-Meteo",
+    "passed": true,
+    "status": 200
+  },
+  {
+    "flow": "live-weather outfit generation",
+    "passed": true,
+    "status": 201
+  },
+  {
+    "flow": "test account erasure / tokens revoked",
+    "passed": true
+  }
+]

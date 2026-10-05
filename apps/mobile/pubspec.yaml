@@ -1,0 +1,61 @@
+name: alamode
+description: "À la Mode — outfit recommendations from your real wardrobe, weather and destination."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # State management & navigation
+  flutter_riverpod: ^2.6.1
+  go_router: ^16.2.0
+
+  # Networking & offline storage
+  dio: ^5.9.0
+  flutter_secure_storage: ^9.2.4
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  connectivity_plus: ^6.1.3
+
+  # Device & hardware
+  mobile_scanner: ^7.0.1
+  image_picker: ^1.1.2
+  geolocator: ^13.0.4
+
+  # 3D mannequin (GLB/GLTF via <model-viewer>, USDZ AR on iOS)
+  model_viewer_plus: ^1.9.3
+
+  # Design system
+  google_fonts: ^6.2.1
+  flutter_animate: ^4.5.2
+  camera: ^0.12.0+2
+  share_plus: ^12.0.2
+  sentry_flutter: ^8.14.2
+
+dev_dependencies:
+  camera_platform_interface: ^2.14.0
+  share_plus_platform_interface: ^6.1.0
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf
+  assets:
+    - assets/fonts/OFL.txt
+    - assets/legal/
+    - assets/image/
+    - assets/3d/mannequins/
+    - assets/3d/clothing/
+    - assets/3d/environments/
+    - assets/3d/textures/

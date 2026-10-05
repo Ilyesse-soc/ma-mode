@@ -1,0 +1,148 @@
+name: quality-and-security
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      production_build:
+        type: boolean
+        default: false
+        description: Build production artifact through the security gate
+permissions:
+  contents: read
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with: {python-version: '3.13'}
+      - name: Install locked dependencies
+        run: |
+          python -m pip install pip==26.2.1
+          pip install --require-hashes -r requirements-dev.txt
+          pip install --no-deps -e .
+      - run: ruff check .
+      - run: mypy app
+      - run: pytest -q
+      - name: Bandit
+        run: bandit -r app -f json -o ../../docs/bandit-ci.json
+      - name: Dependency audit
+        run: pip-audit --format json --output ../../docs/pip-audit-ci.json
+
+  scanners:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with: {python-version: '3.13'}
+      - name: Install checksum-verified scanners
+        run: |
+          python scripts/install_security_tools.py
+          echo "$PWD/.tmp/security-tools" >> "$GITHUB_PATH"
+      - name: Reject tracked runtime secrets
+        run: |
+          if git ls-files | grep -Ev '(^|/)\.env\.example$' | grep -E '(^|/)\.env($|\.)|\.(pem|key|p12|pfx)$|(^|/)(secrets|credentials)/'; then
+            echo 'Runtime secret file tracked by Git'
+            exit 1
+          fi
+      - name: Complete Git history secret scan
+        run: gitleaks git . --log-opts=--all --config .gitleaks.history.toml --redact=100 --report-format json --report-path docs/gitleaks-ci.json
+      - name: Semgrep
+        run: docker run --rm -v "$PWD:/src:ro" -v "$PWD/docs:/out" semgrep/semgrep@sha256:791a85e244b61e83ef96364997fd069f33e78ce2c4b5541d7bee22f07ee117c9 semgrep scan --config /src/.semgrep.yml --metrics off --disable-version-check --error --json --output /out/semgrep-ci.json /src/apps/api/app
+      - name: Dependency and configuration scan
+        run: trivy fs --scanners vuln,misconfig --severity HIGH,CRITICAL --exit-code 1 --format json --output docs/trivy-ci.json --skip-dirs .tmp .
+
+  mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run: {working-directory: apps/mobile}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with: {flutter-version: '3.41.4', channel: stable, cache: true}
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter pub outdated --json
+      - run: flutter build apk --debug
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install checksum-verified Trivy
+        run: python scripts/install_security_tools.py
+      - name: Build and scan the actual non-root image
+        run: |
+          docker build apps/api -t dressly-api:ci
+          .tmp/security-tools/trivy image --severity HIGH,CRITICAL --exit-code 1 --format json --output docs/trivy-image-ci.json dressly-api:ci
+
+  production-build:
+    if: github.event_name == 'workflow_dispatch' && inputs.production_build
+    needs: [api, scanners, mobile, docker]
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      ENVIRONMENT: production
+      APP_DEBUG: 'false'
+      ALLOW_DEV_TOKENS: 'false'
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_PRIVATE_KEY_PEM: ${{ secrets.JWT_PRIVATE_KEY_PEM }}
+      JWT_PUBLIC_KEY_PEM: ${{ secrets.JWT_PUBLIC_KEY_PEM }}
+      RATE_LIMIT_STORAGE_URI: ${{ secrets.RATE_LIMIT_STORAGE_URI }}
+      RATE_LIMIT_KEY_SECRET: ${{ secrets.RATE_LIMIT_KEY_SECRET }}
+      S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+      S3_ENDPOINT_URL: ${{ vars.S3_ENDPOINT_URL }}
+      S3_PUBLIC_ENDPOINT_URL: ${{ vars.S3_PUBLIC_ENDPOINT_URL }}
+      PUBLIC_API_URL: ${{ vars.PUBLIC_API_URL }}
+      CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
+      SMTP_HOST: ${{ vars.SMTP_HOST }}
+      SMTP_FROM: ${{ vars.SMTP_FROM }}
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      ACCOUNT_LINK_BASE_URL: ${{ vars.ACCOUNT_LINK_BASE_URL }}
+      SECURITY_ALERT_EMAIL: ${{ vars.SECURITY_ALERT_EMAIL }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with: {python-version: '3.13'}
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
+        with: {flutter-version: '3.41.4', channel: stable}
+      - run: pip install --require-hashes -r apps/api/requirements-dev.txt
+      - run: python scripts/install_security_tools.py
+      - run: echo "$PWD/.tmp/security-tools" >> "$GITHUB_PATH"
+      - name: Prepare real Android release signing
+        env:
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: |
+          python - <<'PY'
+          import base64, os
+          from pathlib import Path
+          encoded = os.environ.get('ANDROID_KEYSTORE_B64', '')
+          if not encoded:
+              raise SystemExit('Android release signing key is required')
+          destination = Path(os.environ['RUNNER_TEMP']) / 'dressly-release.jks'
+          destination.write_bytes(base64.b64decode(encoded, validate=True))
+          destination.chmod(0o600)
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write('ANDROID_KEYSTORE_PATH=' + str(destination) + '\n')
+          PY
+      - name: Fail-closed production security and legal gate
+        run: python scripts/security_release_check.py
+      - name: Build production APK
+        working-directory: apps/mobile
+        run: flutter build apk --release --dart-define=ENVIRONMENT=production --dart-define=API_BASE_URL=${{ vars.PUBLIC_API_URL }}/api/v1
+      - name: Remove temporary signing material
+        if: always()
+        run: rm -f "$RUNNER_TEMP/dressly-release.jks"

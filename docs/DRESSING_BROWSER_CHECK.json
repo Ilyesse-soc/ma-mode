@@ -1,0 +1,67 @@
+{
+  "scope": "real Flutter UI and real local API",
+  "viewport": "390x844",
+  "checks": [
+    {
+      "name": "onboarding 1",
+      "passed": true
+    },
+    {
+      "name": "onboarding 2",
+      "passed": true
+    },
+    {
+      "name": "onboarding 3",
+      "passed": true
+    },
+    {
+      "name": "real UI registration opens preferences",
+      "passed": true
+    },
+    {
+      "name": "preferences opens Home",
+      "passed": true
+    },
+    {
+      "name": "empty wardrobe has one main add action",
+      "passed": true
+    },
+    {
+      "name": "four real addition methods",
+      "passed": true
+    },
+    {
+      "name": "educational label guide and no-label alternatives",
+      "passed": true
+    },
+    {
+      "name": "real mannequin screen",
+      "passed": true
+    },
+    {
+      "name": "real UI replacement preserves bottom/shoes and saves only selected IDs",
+      "passed": true
+    },
+    {
+      "name": "real UI wear reaches history",
+      "passed": true
+    },
+    {
+      "name": "actual Flutter viewer loads composed owned garments",
+      "passed": true
+    },
+    {
+      "name": "360 degree camera orbit",
+      "passed": true
+    },
+    {
+      "name": "camera zoom",
+      "passed": true
+    },
+    {
+      "name": "double click resets camera",
+      "passed": true
+    }
+  ],
+  "javascriptErrors": []
+}

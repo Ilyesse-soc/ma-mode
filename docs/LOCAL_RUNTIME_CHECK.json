@@ -1,0 +1,9 @@
+{
+  "statuses": {
+    "app": 200,
+    "health": 200,
+    "readiness": 200
+  },
+  "temporary_test_accounts_remaining": 0,
+  "completed_cleanup_jobs": 37
+}

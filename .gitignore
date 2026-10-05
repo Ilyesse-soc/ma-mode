@@ -1,0 +1,33 @@
+# Secrets & build artifacts
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+**/node_modules/
+**/.venv/
+**/*.egg-info/
+**/build/
+**/.dart_tool/
+apps/api/migration_check.db
+**/__pycache__/
+.idea/
+.vscode/
+*.iml
+.DS_Store
+.local/
+.tmp/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+# Android release signing material must remain outside tracked sources.
+*.jks
+*.keystore
+key.properties
