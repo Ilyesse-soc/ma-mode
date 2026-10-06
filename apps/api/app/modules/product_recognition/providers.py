@@ -45,6 +45,10 @@ class GarmentVisualAnalysis(StrictModel):
     product_name: str | None = Field(default=None, max_length=160)
     reference: str | None = Field(default=None, max_length=160)
 
+    cut: str | None = Field(default=None, max_length=120)
+    visible_logo: str | None = Field(default=None, max_length=120)
+    distinctive_features: list[str] = Field(default_factory=list, max_length=8)
+
 
 @dataclass
 class AiResponse:
@@ -73,7 +77,9 @@ _PHOTO_SCHEMA_HINT = (
     "color (the main color), secondary_colors, pattern, material_guess (only if visually obvious), "
     "style_hints, brand ONLY when readable (never infer a brand from style), "
     "product_name as a descriptive garment name, "
-    "reference ONLY when clearly printed (otherwise null), and confidence 0..1. Respond ONLY with JSON."
+    "reference ONLY when clearly printed (otherwise null), cut (approximate), visible_logo only if readable, "
+    "distinctive_features (short visible details, up to 8), and confidence 0..1. "
+    "Never infer composition, brand or SKU from resemblance. Respond ONLY with JSON."
 )
 
 

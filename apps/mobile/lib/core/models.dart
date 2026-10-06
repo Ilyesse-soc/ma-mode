@@ -100,6 +100,7 @@ class Garment {
     this.visualLevel = 'generic',
     this.images = const [],
     this.productImageUrl,
+    this.importMetadata,
   });
 
   final String id;
@@ -144,6 +145,12 @@ class Garment {
   final String visualLevel; // generic | approximate | exact
   final List<GarmentImage> images;
   final String? productImageUrl;
+  final Map<String, dynamic>? importMetadata;
+  String? get brandLabel => brand == null
+      ? null
+      : importMetadata?['brand_status'] == 'unverified'
+      ? '$brand (supposée)'
+      : brand;
   List<String> get displayImageUrls {
     final photos =
         images
@@ -174,6 +181,7 @@ class Garment {
     notes: json['notes'] as String?,
     visualLevel: json['visual_representation_level'] as String? ?? 'generic',
     productImageUrl: json['product_image_url'] as String?,
+    importMetadata: (json['import_metadata'] as Map?)?.cast<String, dynamic>(),
     images: ((json['images'] as List?) ?? const [])
         .map((e) => GarmentImage.fromJson(e as Map<String, dynamic>))
         .toList(),
@@ -200,6 +208,17 @@ class Garment {
     'windproof': windproof,
     'styles': styles,
     'visual_representation_level': visualLevel,
+    if (importMetadata != null)
+      'import_metadata': {
+        for (final key in const [
+          'source_type',
+          'save_mode',
+          'exact_match',
+          'fallback_mode',
+          'brand_status',
+        ])
+          if (importMetadata!.containsKey(key)) key: importMetadata![key],
+      },
     'images': images
         .map(
           (image) => {

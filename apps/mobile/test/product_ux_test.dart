@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:alamode/core/models.dart';
@@ -8,7 +7,7 @@ import 'package:alamode/core/providers.dart';
 import 'package:alamode/features/home/home_screen.dart';
 import 'package:alamode/features/location/location_controller.dart';
 import 'package:alamode/features/mannequin/mannequin_screen.dart';
-import 'package:alamode/features/mannequin/outfit_composer.dart';
+import 'package:alamode/features/mannequin/mannequin_viewer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -68,61 +67,32 @@ void main() {
   });
   for (final presentation in ['male', 'female']) {
     test(
-      '$presentation composition preserves supplied meshes and adds real generic geometry',
+      '$presentation preview uses the original GLB even with selected clothing',
       () async {
-        final bytes = await rootBundle.load(
-          'assets/3d/mannequins/$presentation.glb',
-        );
-        final original = bytes.buffer.asUint8List(
-          bytes.offsetInBytes,
-          bytes.lengthInBytes,
-        );
-        final derived = OutfitComposer.compose(original, [
-          {'id': 'top', 'slug': 'tshirt', 'group': 'top', 'color': 'blue'},
-          {'id': 'jeans', 'slug': 'jeans', 'group': 'bottom', 'color': 'black'},
-          {
-            'id': 'shoes',
-            'slug': 'sneakers',
-            'group': 'shoes',
-            'color': 'white',
-          },
-        ]);
-        final header = ByteData.sublistView(derived);
-        expect(header.getUint32(8, Endian.little), derived.length);
-        final jsonLength = header.getUint32(12, Endian.little);
+        final viewer = MannequinViewer(
+          presentation: presentation,
+          garments: [
+            piece('top', 'top', 'tshirt', 'blue'),
+            piece('bottom', 'bottom', 'jeans', 'black'),
+          ],
+        ).createViewer();
+        expect(viewer.src, 'assets/3d/mannequins/$presentation.glb');
+        expect(viewer.src.startsWith('data:'), false);
+        final bytes = await rootBundle.load(viewer.src);
         final document =
-            jsonDecode(utf8.decode(derived.sublist(20, 20 + jsonLength)))
+            jsonDecode(
+                  utf8.decode(
+                    bytes.buffer.asUint8List(
+                      bytes.offsetInBytes + 20,
+                      bytes.getUint32(12, Endian.little),
+                    ),
+                  ),
+                )
                 as Map;
-        final meshes = document['meshes'] as List;
-        expect(
-          meshes.map((m) => m['name']),
-          containsAll([
-            'Mannequin_Body',
-            'Mannequin_Briefs',
-            'Dressly_Generic_top',
-            'Dressly_Generic_jeans',
-            'Dressly_Generic_shoes',
-          ]),
-        );
-        for (final mesh in meshes.skip(2)) {
-          final accessor =
-              document['accessors'][mesh['primitives'][0]['indices']];
-          expect(accessor['count'], greaterThan(30));
-        }
-        final originalBin = original.sublist(
-          28 + bytes.getUint32(12, Endian.little),
-        );
-        expect(
-          derived.sublist(
-            28 + jsonLength,
-            28 + jsonLength + originalBin.length,
-          ),
-          originalBin,
-        );
-        // Ignored local artifact used for the real browser rendering check.
-        final output = File('../../.tmp/dressing-$presentation.glb');
-        await output.parent.create(recursive: true);
-        await output.writeAsBytes(derived);
+        expect((document['meshes'] as List).map((m) => m['name']), [
+          'Mannequin_Body',
+          'Mannequin_Briefs',
+        ]);
       },
     );
   }

@@ -57,7 +57,20 @@ async def result_for(db, user_id, garment_id):
         # Catalog guesses must never become input evidence for a later search.
         if row.proposed.get("provider") or row.status.value == "rejected":
             continue
-        for key in ("brand", "reference", "color", "name", "category_slug", "size", "material"):
+        for key in (
+            "brand",
+            "reference",
+            "color",
+            "name",
+            "category_slug",
+            "size",
+            "material",
+            "department",
+            "cut",
+            "visible_logo",
+            "distinctive_features",
+            "styles",
+        ):
             if row.proposed.get(key):
                 evidence[key] = row.proposed[key]
     if garment.barcode:
@@ -76,13 +89,31 @@ async def result_for(db, user_id, garment_id):
         (row for row in rows if row.status.value != "rejected"), key=lambda c: c.confidence, reverse=True
     )
     status = "candidates" if ranked else "not_found"
+    if garment.import_metadata:
+        garment.import_metadata = {
+            **garment.import_metadata,
+            "detected_brand": evidence.get("brand"),
+            "detected_category": evidence.get("category_slug"),
+            "detected_color": evidence.get("color"),
+            "evidence": evidence,
+            "candidates": [
+                {
+                    "id": str(c.id),
+                    "source": c.source.value,
+                    "status": c.status.value,
+                    "confidence": c.confidence,
+                    "proposed": c.proposed,
+                }
+                for c in rows
+            ],
+        }
     return IdentifyResult(
         garment_id=garment.id,
         status=status,
         candidates=[CandidateOut.model_validate(c) for c in ranked],
         message="Nous pensons avoir trouvé ton vêtement"
         if ranked
-        else "J'ai besoin d'un peu plus d'informations.",
+        else "Je n'ai pas encore trouvé le vêtement exact. Aide-moi avec quelques détails.",
         missing_fields=missing,
         recommended_actions=actions,
         evidence=evidence,
@@ -95,11 +126,15 @@ async def result_for(db, user_id, garment_id):
 async def search_evidence(db, user_id, garment_id):
     result = await result_for(db, user_id, garment_id)
     evidence = result.evidence
-    if not evidence.get("reference") and not (evidence.get("brand") and evidence.get("name")):
+    if not any(evidence.get(k) for k in ("reference", "name", "category_slug")):
         return result
-    query = " ".join(str(evidence.get(key) or "") for key in ("brand", "reference", "name", "color")).strip()[
-        :250
-    ]
+    garment = await service.get_garment(db, user_id, garment_id)
+    query = " ".join(
+        str(evidence.get(key) or "")
+        for key in ("brand", "reference", "name", "category_slug", "color", "department")
+    ).strip()[:250]
+    if garment.import_metadata:
+        garment.import_metadata = {**garment.import_metadata, "search_query_used": query}
     for provider in get_product_search_providers():
         try:
             hits = await provider.search_by_text(query)

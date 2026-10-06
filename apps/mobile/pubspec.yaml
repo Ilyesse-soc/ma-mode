@@ -27,6 +27,7 @@ dependencies:
   # Device & hardware
   mobile_scanner: ^7.0.1
   image_picker: ^1.1.2
+  file_selector: ^1.1.0
   geolocator: ^13.0.4
 
   # 3D mannequin (GLB/GLTF via <model-viewer>, USDZ AR on iOS)
@@ -40,6 +41,7 @@ dependencies:
   sentry_flutter: ^8.14.2
 
 dev_dependencies:
+  file_selector_platform_interface: ^2.7.0
   camera_platform_interface: ^2.14.0
   share_plus_platform_interface: ^6.1.0
   flutter_test:

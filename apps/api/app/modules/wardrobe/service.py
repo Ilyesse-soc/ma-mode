@@ -157,6 +157,20 @@ async def confirm_candidate(
     if candidate is None:
         raise not_found("candidate")
     candidate.status = candidate.status.__class__.CONFIRMED
+    if garment.import_metadata:
+        matches = candidate.proposed.get("matched_fields", [])
+        # Only an identifier actually verified by the catalog can establish identity.
+        exact = bool(
+            candidate.proposed.get("provider") and "barcode" in matches and candidate.confidence == 1
+        )
+        garment.import_metadata = {
+            **garment.import_metadata,
+            "candidate_selected": str(candidate.id),
+            "confidence": candidate.confidence,
+            "confidence_kind": candidate.proposed.get("confidence_kind", "model_estimate"),
+            "exact_match": exact,
+            "fallback_mode": not exact,
+        }
     images = candidate.proposed.get("images", [])
     if isinstance(images, list) and images and isinstance(images[0], str):
         from app.core.errors import ApiError

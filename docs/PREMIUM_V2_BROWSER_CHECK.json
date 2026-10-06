@@ -1,0 +1,107 @@
+{
+  "scope": "real Flutter UI and real local API",
+  "viewport": "390x844",
+  "checks": [
+    {
+      "name": "premium login subtitle",
+      "passed": true
+    },
+    {
+      "name": "login field validation",
+      "passed": true
+    },
+    {
+      "name": "real UI registration opens preferences",
+      "passed": true
+    },
+    {
+      "name": "preferences and consent review opens Home",
+      "passed": true
+    },
+    {
+      "name": "file import offers all sources",
+      "passed": true
+    },
+    {
+      "name": "file import saves real private photo and honest provenance",
+      "passed": true
+    },
+    {
+      "name": "file photo is primary and garment stays recommendation eligible",
+      "passed": true
+    },
+    {
+      "name": "screenshot import offers all sources",
+      "passed": true
+    },
+    {
+      "name": "screenshot import saves real private photo and honest provenance",
+      "passed": true
+    },
+    {
+      "name": "screenshot photo is primary and garment stays recommendation eligible",
+      "passed": true
+    },
+    {
+      "name": "real engine produces three proposals",
+      "passed": true
+    },
+    {
+      "name": "proposal 1 keeps clean original 3D and a real garment rail",
+      "passed": true
+    },
+    {
+      "name": "proposal 2 keeps clean original 3D and a real garment rail",
+      "passed": true
+    },
+    {
+      "name": "proposal 3 keeps clean original 3D and a real garment rail",
+      "passed": true
+    },
+    {
+      "name": "male profile loads its correct original GLB",
+      "passed": true
+    },
+    {
+      "name": "female profile loads its correct original GLB",
+      "passed": true
+    },
+    {
+      "name": "real pointer gesture rotates the model",
+      "passed": true
+    },
+    {
+      "name": "real wheel gesture zooms the model",
+      "passed": true
+    },
+    {
+      "name": "actual reset button restores camera",
+      "passed": true
+    },
+    {
+      "name": "360 degree camera orbit",
+      "passed": true
+    },
+    {
+      "name": "camera zoom",
+      "passed": true
+    },
+    {
+      "name": "visible renderer reset button",
+      "passed": true
+    },
+    {
+      "name": "double click resets camera",
+      "passed": true
+    },
+    {
+      "name": "actual missing GLB returns a visible recoverable error",
+      "passed": true
+    },
+    {
+      "name": "retry reloads the supplied model successfully",
+      "passed": true
+    }
+  ],
+  "javascriptErrors": []
+}

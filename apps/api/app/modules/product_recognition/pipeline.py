@@ -127,6 +127,9 @@ async def analyze_photo(
             "brand": analysis.brand,
             "name": analysis.product_name,
             "reference": analysis.reference,
+            "cut": analysis.cut,
+            "visible_logo": analysis.visible_logo,
+            "distinctive_features": analysis.distinctive_features,
         }.items()
         if v
     }

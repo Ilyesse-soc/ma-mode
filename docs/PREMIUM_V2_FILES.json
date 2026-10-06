@@ -1,0 +1,45 @@
+{
+  "files": [
+    "apps/api/alembic/versions/20261006_import_metadata.py",
+    "apps/api/app/modules/product_recognition/identification.py",
+    "apps/api/app/modules/product_recognition/pipeline.py",
+    "apps/api/app/modules/product_recognition/providers.py",
+    "apps/api/app/modules/wardrobe/models.py",
+    "apps/api/app/modules/wardrobe/router.py",
+    "apps/api/app/modules/wardrobe/schemas.py",
+    "apps/api/app/modules/wardrobe/service.py",
+    "apps/api/tests/test_import_v2.py",
+    "apps/mobile/lib/core/models.dart",
+    "apps/mobile/lib/core/widgets/garment_card.dart",
+    "apps/mobile/lib/features/auth/screens/login_screen.dart",
+    "apps/mobile/lib/features/mannequin/mannequin_screen.dart",
+    "apps/mobile/lib/features/mannequin/mannequin_viewer.dart",
+    "apps/mobile/lib/features/mannequin/outfit_composer.dart",
+    "apps/mobile/lib/features/mannequin/outfit_stage.dart",
+    "apps/mobile/lib/features/recommendation/outfit_flow_screen.dart",
+    "apps/mobile/lib/features/wardrobe/screens/add_garment_screen.dart",
+    "apps/mobile/lib/features/wardrobe/screens/garment_detail_screen.dart",
+    "apps/mobile/lib/features/wardrobe/screens/identification_review_screen.dart",
+    "apps/mobile/lib/features/wardrobe/screens/import_image_screen.dart",
+    "apps/mobile/lib/features/wardrobe/screens/photo_screen.dart",
+    "apps/mobile/pubspec.lock",
+    "apps/mobile/pubspec.yaml",
+    "apps/mobile/test/premium_v2_test.dart",
+    "apps/mobile/test/product_ux_test.dart",
+    "apps/mobile/test/security_test.dart",
+    "apps/mobile/web/mannequin-runtime.js",
+    "docs/LOCAL_RUNTIME_CHECK.json",
+    "docs/PREMIUM_V2.md",
+    "docs/PREMIUM_V2_BROWSER_CHECK.json",
+    "docs/PREMIUM_V2_FILES.json",
+    "docs/bandit-v2.json",
+    "scripts/start-local.ps1"
+  ],
+  "deleted": [
+    "apps/mobile/lib/features/mannequin/outfit_composer.dart"
+  ],
+  "unchanged_models": [
+    "apps/mobile/assets/3d/mannequins/female.glb",
+    "apps/mobile/assets/3d/mannequins/male.glb"
+  ]
+}

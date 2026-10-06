@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'photo_screen.dart';
+import 'import_image_screen.dart';
 import 'photo_guide_screen.dart';
 import 'identification_review_screen.dart';
 
@@ -43,8 +44,11 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
   String? _notice;
   String? _draftId;
   String? _candidateId;
+  String? _importMode;
   String _season = 'all';
   CapturedPhoto? _photo;
+  bool _photoAttached = false;
+  bool _brandVerified = false;
   final Set<String> _styles = {};
 
   @override
@@ -84,6 +88,16 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
       _windproof = garment.windproof;
       _season = garment.season;
       _styles.addAll(garment.styles);
+      if (garment.importMetadata != null) {
+        _candidateId = garment.importMetadata!['candidate_selected'] as String?;
+        _importMode = _candidateId != null
+            ? 'candidate'
+            : garment.importMetadata!['save_mode'] == 'approximate'
+            ? 'approximate'
+            : 'custom';
+        _brandVerified =
+            garment.importMetadata!['brand_status'] == 'user_confirmed';
+      }
       _formExpanded = true;
     }
     _loadCategories();
@@ -146,7 +160,22 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
       '/wardrobe/photo?mode=${labelMode ? 'label' : 'garment'}',
     );
     if (photo == null || !mounted) return;
-    labelMode = photo.labelMode;
+    await _uploadAndAnalyze(photo);
+  }
+
+  Future<void> _importImage() async {
+    final photo = await Navigator.of(context).push<CapturedPhoto>(
+      MaterialPageRoute(builder: (_) => const ImportImageScreen()),
+    );
+    if (photo != null && mounted) await _uploadAndAnalyze(photo);
+  }
+
+  Future<void> _uploadAndAnalyze(CapturedPhoto photo) async {
+    final labelMode = photo.labelMode;
+    _photoAttached = false;
+    _candidateId = null;
+    _brandVerified = false;
+    if (photo.sourceType != null) _importMode = null;
     _photo = photo;
     setState(() {
       _busy = true;
@@ -178,11 +207,14 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
           'content_type': upload.data['content_type'],
           'byte_size': upload.data['byte_size'],
           'image_kind': labelMode ? 'label' : 'garment',
+          if (photo.sourceType != null) 'source_type': photo.sourceType,
           'width': upload.data['width'],
           'height': upload.data['height'],
         },
       );
       final imageId = attach.data['id'] as String;
+      _photoAttached = true;
+      if (photo.sourceType != null) _importMode = 'custom';
       final consent = await dio.get('/me/consents');
       var useAi = consent.data['ai'] == true;
       if (!useAi && mounted) {
@@ -274,6 +306,10 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
     );
     if (!mounted || choice == null) return;
     final action = choice['action'];
+    if (action == 'import') {
+      await _importImage();
+      return;
+    }
     if (action == 'label' || action == 'photo') {
       await _pickAndAnalyze(labelMode: action == 'label');
       return;
@@ -287,6 +323,15 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
     );
     setState(() {
       _candidateId = choice['id'] as String?;
+      _brandVerified = false;
+      if (_importMode != null) {
+        _importMode = _candidateId != null
+            ? 'candidate'
+            : (choice['action'] == 'approximate' ? 'approximate' : 'custom');
+      }
+      if (proposed['styles'] is List) {
+        _styles.addAll((proposed['styles'] as List).whereType<String>());
+      }
       for (final entry in {
         'name': _name,
         'brand': _brand,
@@ -307,6 +352,14 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
   }
 
   Future<void> _save() async {
+    if (_busy) return;
+    if (_photo != null && !_photoAttached) {
+      setState(
+        () => _notice =
+            'L’image n’a pas encore été enregistrée. Réessaie son envoi ou continue sans image.',
+      );
+      return;
+    }
     if (!_formKey.currentState!.validate()) return;
     if (_categorySlug == null) {
       setState(() => _notice = 'Choisis une catégorie');
@@ -353,6 +406,16 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
         saved = await ref
             .read(wardrobeRepositoryProvider)
             .updateGarment(_draftId!, payload);
+      }
+      if (!mounted) return;
+      if (_importMode != null) {
+        await ref
+            .read(apiClientProvider)
+            .dio
+            .post(
+              '/garments/${saved.id}/import/finish',
+              data: {'mode': _importMode, 'brand_confirmed': _brandVerified},
+            );
       }
       if (!mounted) return;
       ref.invalidate(wardrobeProvider);
@@ -402,7 +465,7 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
                   icon: Icons.photo_camera_outlined,
                   title: 'Photographier le vêtement',
                   subtitle:
-                      'Vêtement entier, bonne lumière et arrière-plan simple.',
+                      'Prends le vêtement entier, bien éclairé, sur fond simple',
                   onTap: _busy ? null : () => _pickAndAnalyze(labelMode: false),
                 ),
                 const SizedBox(height: AppTheme.spacingS),
@@ -410,16 +473,26 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
                   icon: Icons.label_outline,
                   title: 'Photographier l’étiquette',
                   subtitle:
-                      'Lis la marque, la référence et la composition sur l’étiquette intérieure.',
+                      'Lis automatiquement la marque, la référence et la composition',
                   onTap: _busy ? null : () => _pickAndAnalyze(labelMode: true),
+                ),
+                const SizedBox(height: AppTheme.spacingS),
+                _MethodTile(
+                  icon: Icons.add_photo_alternate_outlined,
+                  title: 'Importer une image',
+                  subtitle:
+                      'Ajoute une capture ou une image d’un vêtement vu en ligne',
+                  onTap: _busy ? null : _importImage,
                 ),
                 const SizedBox(height: AppTheme.spacingS),
                 _MethodTile(
                   icon: Icons.edit_outlined,
                   title: 'Saisie manuelle',
                   subtitle:
-                      'Renseigne la marque, le type, la couleur et les autres informations.',
-                  onTap: () => setState(() => _formExpanded = !_formExpanded),
+                      'Renseigne la marque, le type, la couleur et les détails',
+                  onTap: _busy
+                      ? null
+                      : () => setState(() => _formExpanded = !_formExpanded),
                 ),
               ],
               if (_busy) ...[
@@ -446,6 +519,56 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
                 ),
               ],
               if (_formExpanded) ...[
+                if (_photo != null && !_photoAttached && !_busy) ...[
+                  OutlinedButton.icon(
+                    onPressed: () => _uploadAndAnalyze(_photo!),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Réessayer l’envoi de l’image'),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() {
+                      _photo = null;
+                      _importMode = null;
+                    }),
+                    child: const Text('Continuer sans image'),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                if (_importMode != null) ...[
+                  const Text(
+                    'Ton image est conservée. Vérifie la catégorie et la couleur ; laisse la marque vide si elle est inconnue.',
+                  ),
+                  const SizedBox(height: 12),
+                  SegmentedButton<String>(
+                    segments: [
+                      const ButtonSegment(
+                        value: 'custom',
+                        label: Text('Personnalisé'),
+                      ),
+                      const ButtonSegment(
+                        value: 'approximate',
+                        label: Text('Approché'),
+                      ),
+                      ButtonSegment(
+                        value: 'candidate',
+                        label: const Text('Suggestion'),
+                        enabled:
+                            _candidateId != null || _importMode == 'candidate',
+                      ),
+                    ],
+                    selected: {_importMode!},
+                    onSelectionChanged: _busy
+                        ? null
+                        : (value) => setState(() {
+                            if (value.first == 'candidate' &&
+                                _candidateId == null) {
+                              return;
+                            }
+                            _importMode = value.first;
+                          }),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 Wrap(
                   spacing: 8,
                   children: [
@@ -462,6 +585,11 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
                           : () => _pickAndAnalyze(labelMode: true),
                       icon: const Icon(Icons.document_scanner_outlined),
                       label: const Text('Photo étiquette'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: _busy ? null : _importImage,
+                      icon: const Icon(Icons.add_photo_alternate_outlined),
+                      label: const Text('Importer une image'),
                     ),
                     OutlinedButton.icon(
                       onPressed: _busy ? null : _scanBarcode,
@@ -533,10 +661,23 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
                 const SizedBox(height: AppTheme.spacingM),
                 TextFormField(
                   controller: _brand,
+                  onChanged: (_) => setState(() => _brandVerified = false),
                   decoration: const InputDecoration(
                     labelText: 'Marque (optionnel)',
                   ),
                 ),
+                if (_importMode != null)
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('J’ai vérifié la marque'),
+                    subtitle: const Text(
+                      'Sans confirmation, elle reste marquée comme supposée.',
+                    ),
+                    value: _brandVerified,
+                    onChanged: _busy || _brand.text.trim().isEmpty
+                        ? null
+                        : (v) => setState(() => _brandVerified = v ?? false),
+                  ),
                 const SizedBox(height: AppTheme.spacingM),
                 TextFormField(
                   controller: _color,
@@ -607,7 +748,13 @@ class _AddGarmentScreenState extends ConsumerState<AddGarmentScreen> {
                 const SizedBox(height: AppTheme.spacingM),
                 FilledButton(
                   onPressed: _busy ? null : _save,
-                  child: const Text('Enregistrer'),
+                  child: Text(
+                    _importMode == 'custom'
+                        ? 'Enregistrer comme vêtement personnalisé'
+                        : _importMode == 'approximate'
+                        ? 'Continuer avec une version approchée'
+                        : 'Enregistrer',
+                  ),
                 ),
               ],
             ],
@@ -636,7 +783,19 @@ class _MethodTile extends StatelessWidget {
     final theme = Theme.of(context);
     return Card(
       child: ListTile(
-        leading: Icon(icon, color: theme.colorScheme.primary),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary.withValues(alpha: .08),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: theme.colorScheme.primary, size: 22),
+        ),
         title: Text(title),
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.chevron_right),

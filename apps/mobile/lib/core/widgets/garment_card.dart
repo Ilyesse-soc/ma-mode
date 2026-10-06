@@ -94,7 +94,7 @@ class GarmentCard extends StatelessWidget {
                   children: [
                     if (garment.brand?.isNotEmpty == true)
                       Text(
-                        garment.brand!,
+                        garment.brandLabel!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.labelSmall?.copyWith(

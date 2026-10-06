@@ -1,6 +1,7 @@
 """Wardrobe routes: garments CRUD, images, identification pipeline."""
 
 import uuid
+from typing import Literal
 
 from fastapi import APIRouter, Depends, Query
 from pydantic import Field
@@ -132,6 +133,7 @@ class AttachImagePayload(StrictModel):
     width: int | None = None
     height: int | None = None
     image_kind: str = Field(default="garment", pattern=r"^(garment|label)$")
+    source_type: Literal["imported_image", "screenshot", "gallery", "file"] | None = None
 
 
 @router.post("/garments/{garment_id}/images", response_model=GarmentImageOut, status_code=201)
@@ -141,7 +143,7 @@ async def attach_image(
     db: AsyncSession = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    await service.get_garment(db, current.id, garment_id)
+    garment = await service.get_garment(db, current.id, garment_id)
     storage.validate_object_key(current.id, payload.object_key)
     upload = await db.scalar(
         select(MediaUpload)
@@ -185,10 +187,55 @@ async def attach_image(
             .values(is_primary=False)
         )
         image.is_primary = True
+        if payload.source_type:
+            # Persist the sanitized private object key, never an expiring signed URL.
+            garment.import_metadata = {
+                **(garment.import_metadata or {}),
+                "source_type": payload.source_type,
+                "original_image_path": image.object_key,
+                "exact_match": False,
+                "fallback_mode": True,
+                "candidate_selected": None,
+            }
     await db.commit()
     out = GarmentImageOut.model_validate(image)
     out.download_url = storage.create_presigned_download(image.object_key)
     return out
+
+
+class ImportFinishIn(StrictModel):
+    mode: Literal["custom", "approximate", "candidate"]
+    brand_confirmed: bool = False
+
+
+@router.post("/garments/{garment_id}/import/finish", response_model=GarmentOut)
+async def finish_import(
+    garment_id: uuid.UUID,
+    payload: ImportFinishIn,
+    db: AsyncSession = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    garment = await service.get_garment(db, current.id, garment_id)
+    metadata = dict(garment.import_metadata or {})
+    if not metadata.get("original_image_path"):
+        raise conflict("image_required", "Import an image before saving its provenance")
+    if payload.mode == "candidate" and not metadata.get("candidate_selected"):
+        raise conflict("candidate_required", "Confirm a candidate first")
+    metadata.update(
+        fallback_mode=payload.mode != "candidate" or not metadata.get("exact_match", False),
+        save_mode=payload.mode,
+        verified_category=garment.category.slug,
+        verified_color=garment.color,
+        brand_status=("user_confirmed" if payload.brand_confirmed else "unverified")
+        if garment.brand
+        else "unknown",
+    )
+    if payload.mode != "candidate":
+        metadata.update(exact_match=False, candidate_selected=None, confidence=None, confidence_kind=None)
+        garment.product_image_url = None
+    garment.import_metadata = metadata
+    await db.commit()
+    return _serialize_garment(garment)
 
 
 # --- Identification pipeline ---------------------------------------------------
@@ -283,7 +330,9 @@ async def identification_state(
 ):
     from app.modules.product_recognition.identification import result_for
 
-    return await result_for(db, current.id, garment_id)
+    result = await result_for(db, current.id, garment_id)
+    await db.commit()
+    return result
 
 
 @router.post("/garments/{garment_id}/identify/refine", response_model=IdentifyResult)
@@ -356,5 +405,12 @@ async def reject_candidate(
     garment = await service.get_garment(db, current.id, garment_id)
     if garment.product_image_url in candidate.proposed.get("images", []):
         garment.product_image_url = None
+    if garment.import_metadata and garment.import_metadata.get("candidate_selected") == str(candidate.id):
+        garment.import_metadata = {
+            **garment.import_metadata,
+            "candidate_selected": None,
+            "exact_match": False,
+            "fallback_mode": True,
+        }
     await db.commit()
     return candidate

@@ -57,6 +57,26 @@ foreach ($serviceName in @('api', 'cleanup')) {
   $processes | ConvertTo-Json | Set-Content -LiteralPath "$workspacePath/.local/processes.json"
 }
 Set-Location -LiteralPath (Join-Path $workspacePath 'apps/mobile')
+flutter pub get
+if ($LASTEXITCODE -ne 0) { throw 'Flutter dependency resolution failed' }
+# Flutter can reuse a web registrant created before a new device plugin was added.
+# Regenerate build artifacts when any cached registrant omits a current web plugin.
+$webPluginNames = (Get-Content -Raw -LiteralPath '.flutter-plugins-dependencies' | ConvertFrom-Json).plugins.web.name
+$registrants = @(Get-ChildItem -LiteralPath '.dart_tool/flutter_build' -Filter 'web_plugin_registrant.dart' -Recurse -ErrorAction SilentlyContinue)
+$staleRegistrant = $false
+foreach ($registrant in $registrants) {
+  $registrantText = Get-Content -Raw -LiteralPath $registrant.FullName
+  foreach ($pluginName in $webPluginNames) {
+    if (-not $registrantText.Contains("package:$pluginName/")) { $staleRegistrant = $true }
+  }
+}
+if ($staleRegistrant) {
+  Write-Host 'Web plugin registration changed; regenerating Flutter build artifacts.'
+  flutter clean
+  if ($LASTEXITCODE -ne 0) { throw 'Flutter generated-file cleanup failed' }
+  flutter pub get
+  if ($LASTEXITCODE -ne 0) { throw 'Flutter dependency regeneration failed' }
+}
 if (-not $SkipChecks) {
   flutter analyze
   if ($LASTEXITCODE -ne 0) { throw 'flutter analyze failed' }

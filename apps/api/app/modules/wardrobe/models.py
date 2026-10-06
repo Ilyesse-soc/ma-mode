@@ -68,6 +68,7 @@ class Garment(Base, TimestampMixin):
     )
     asset_key: Mapped[str | None] = mapped_column(sa.String(255))  # 3D asset lookup key
     product_image_url: Mapped[str | None] = mapped_column(sa.String(2048))
+    import_metadata: Mapped[dict | None] = mapped_column(JsonVariant, nullable=True)
     is_archived: Mapped[bool] = mapped_column(sa.Boolean, default=False, nullable=False)
     last_worn_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True))
 

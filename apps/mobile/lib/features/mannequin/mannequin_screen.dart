@@ -158,6 +158,36 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
                       garments: selected,
                       height: 400,
                     ),
+                    if (selected.isNotEmpty && _dragging == null)
+                      Positioned(
+                        left: 8,
+                        top: 12,
+                        bottom: 48,
+                        width: 48,
+                        child: ListView.separated(
+                          itemCount: selected.length,
+                          separatorBuilder: (_, _) => const SizedBox(height: 8),
+                          itemBuilder: (_, index) => SizedBox(
+                            height: 60,
+                            child: Semantics(
+                              button: true,
+                              label: 'Détail ${selected[index].name}',
+                              child: Material(
+                                borderRadius: BorderRadius.circular(10),
+                                clipBehavior: Clip.antiAlias,
+                                child: InkWell(
+                                  onTap: () => context.push(
+                                    '/wardrobe/garment/${selected[index].id}',
+                                  ),
+                                  child: GarmentVisual(
+                                    garment: selected[index],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     if (_dragging != null)
                       for (final zone in DressingDropZone.values)
                         Positioned.fromRect(
@@ -239,7 +269,7 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 14),
                   child: Text(
-                    'Choisis ta première pièce pour habiller ton mannequin.',
+                    'Choisis ta première pièce pour composer ta tenue.',
                   ),
                 ),
               SingleChildScrollView(
@@ -323,7 +353,7 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
               const SizedBox(height: 14),
               const SizedBox(height: 14),
               Text(
-                'Représentation générique de tes pièces : leur catégorie et leur couleur. Les coupes et motifs exacts ne sont pas reproduits.',
+                'Prévisualisation stylisée : mannequin de présentation et images de tes pièces. Aucun essayage 3D exact.',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               if (_error != null)

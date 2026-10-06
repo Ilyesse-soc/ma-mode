@@ -210,6 +210,17 @@ class _GarmentDetailScreenState extends ConsumerState<GarmentDetailScreen> {
                     child: GarmentVisual(garment: garment),
                   ),
                   const SizedBox(height: AppTheme.spacingL),
+                  if (garment.importMetadata != null) ...[
+                    Text(
+                      garment.importMetadata!['exact_match'] == true
+                          ? 'Produit confirmé par son identifiant catalogue'
+                          : garment.importMetadata!['save_mode'] == 'custom'
+                          ? 'Vêtement personnalisé · photo importée'
+                          : 'Identification approchée · produit exact non vérifié',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   Text(
                     garment.name,
                     style: theme.textTheme.headlineSmall?.copyWith(
@@ -218,7 +229,9 @@ class _GarmentDetailScreenState extends ConsumerState<GarmentDetailScreen> {
                   ),
                   if (garment.brand != null)
                     Text(
-                      garment.brand!,
+                      garment.importMetadata?['brand_status'] == 'unverified'
+                          ? '${garment.brand} · marque supposée'
+                          : garment.brand!,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.secondary,
                       ),
@@ -331,7 +344,7 @@ class _GarmentDetailScreenState extends ConsumerState<GarmentDetailScreen> {
                     child: const Text('Modifier le vêtement'),
                   ),
                   Text(
-                    'Représentation 3D : ${_visualLevelLabel(garment.visualLevel)}',
+                    'Prévisualisation : mannequin de présentation et image de ta pièce. L’essayage 3D exact est indisponible.',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.secondary,
                     ),
@@ -383,11 +396,5 @@ class _GarmentDetailScreenState extends ConsumerState<GarmentDetailScreen> {
     'spring' => 'Printemps',
     'autumn' => 'Automne',
     _ => 'Toutes',
-  };
-
-  static String _visualLevelLabel(String level) => switch (level) {
-    'exact' => 'modèle exact du produit',
-    'approximate' => 'représentation rapprochée',
-    _ => 'représentation générique (catégorie + couleur)',
   };
 }

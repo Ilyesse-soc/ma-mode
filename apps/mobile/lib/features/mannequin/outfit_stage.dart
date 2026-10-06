@@ -17,45 +17,60 @@ class OutfitStage extends StatelessWidget {
   final double height;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: height,
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (garments.isNotEmpty) ...[
-          SizedBox(
-            width: 52,
-            child: ListView.separated(
-              itemCount: garments.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 10),
-              itemBuilder: (_, i) => SizedBox(
-                height: 60,
-                child: Semantics(
-                  button: true,
-                  label: 'Détail ${garments[i].name}',
-                  child: Material(
-                    borderRadius: BorderRadius.circular(10),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      onTap: () =>
-                          context.push('/wardrobe/garment/${garments[i].id}'),
-                      child: GarmentVisual(garment: garments[i]),
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      SizedBox(
+        height: height,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (garments.isNotEmpty) ...[
+              SizedBox(
+                width: 64,
+                child: ListView.separated(
+                  itemCount: garments.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 10),
+                  itemBuilder: (_, i) => SizedBox(
+                    height: 76,
+                    child: Semantics(
+                      button: true,
+                      label: 'Détail ${garments[i].name}',
+                      child: Material(
+                        borderRadius: BorderRadius.circular(10),
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          onTap: () => context.push(
+                            '/wardrobe/garment/${garments[i].id}',
+                          ),
+                          child: GarmentVisual(garment: garments[i]),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
+              const SizedBox(width: 10),
+            ],
+            Expanded(
+              child: MannequinViewer(
+                presentation: presentation,
+                garments: garments,
+                height: height,
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-        ],
-        Expanded(
-          child: MannequinViewer(
-            presentation: presentation,
-            garments: garments,
-            height: height,
+          ],
+        ),
+      ),
+      if (garments.isNotEmpty)
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Text(
+            'Prévisualisation stylisée · Les images de tes pièces accompagnent le mannequin. L’essayage 3D exact nécessite des vêtements 3D adaptés.',
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
           ),
         ),
-      ],
-    ),
+    ],
   );
 }

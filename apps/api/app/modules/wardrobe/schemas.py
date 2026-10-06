@@ -2,6 +2,7 @@
 
 import uuid
 from datetime import datetime
+from typing import Literal
 
 from pydantic import ConfigDict, Field
 
@@ -101,6 +102,7 @@ class GarmentOut(StrictModel):
     category: CategoryOut
     images: list[GarmentImageOut] = Field(default_factory=list)
     product_image_url: str | None = None
+    import_metadata: dict | None = None
 
 
 class GarmentPage(StrictModel):
@@ -152,6 +154,7 @@ class RefineIdentificationIn(StrictModel):
     color: str | None = Field(default=None, max_length=60)
     name: str | None = Field(default=None, max_length=160)
     category_slug: str | None = Field(default=None, max_length=64)
+    department: Literal["male", "female", "unisex"] | None = None
 
 
 class ConfirmCandidateIn(StrictModel):

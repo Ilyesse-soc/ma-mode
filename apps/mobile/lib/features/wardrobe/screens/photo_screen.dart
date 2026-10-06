@@ -6,10 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CapturedPhoto {
-  const CapturedPhoto(this.bytes, this.name, {this.labelMode = false});
+  const CapturedPhoto(
+    this.bytes,
+    this.name, {
+    this.labelMode = false,
+    this.sourceType,
+  });
   final Uint8List bytes;
   final String name;
   final bool labelMode;
+  final String? sourceType;
 }
 
 class PhotoScreen extends StatefulWidget {

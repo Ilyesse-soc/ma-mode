@@ -664,7 +664,9 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
           height: MediaQuery.sizeOf(context).height * .62,
         ),
         const SizedBox(height: 12),
-        const Text('Représentation générique par catégorie et couleur.'),
+        const Text(
+          'Prévisualisation stylisée : les pièces sont présentées à côté du mannequin.',
+        ),
         Wrap(
           spacing: 8,
           children: [

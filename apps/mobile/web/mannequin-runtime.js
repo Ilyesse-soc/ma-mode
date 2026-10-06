@@ -20,6 +20,16 @@ function attach(viewer) {
   retry.style.cssText = 'background:#ede2ce;color:#191a1b;border:0;border-radius:24px;padding:12px 24px;cursor:pointer';
   failure.append(message, retry);
   parent.append(failure);
+  const reset = document.createElement('button');
+  reset.textContent = 'Recentrer';
+  reset.setAttribute('aria-label', 'Réinitialiser la caméra du mannequin');
+  reset.style.cssText = 'position:absolute;right:12px;bottom:12px;z-index:2;background:#151517dd;color:#ede2ce;border:1px solid #393939;border-radius:18px;padding:10px 14px;cursor:pointer';
+  reset.addEventListener('click', () => {
+    viewer.cameraOrbit = '0deg 90deg 105%';
+    viewer.cameraTarget = 'auto auto auto';
+    viewer.jumpCameraToGoal();
+  });
+  parent.append(reset);
   let timeout, started;
   const progress = viewer.querySelector('[slot="progress-bar"]');
   const failed = () => {
@@ -55,7 +65,7 @@ function attach(viewer) {
     viewer.src = '';
     requestAnimationFrame(() => { viewer.src = source; });
   });
-  active.set(viewer, () => clearTimeout(timeout));
+  active.set(viewer, () => { clearTimeout(timeout); reset.remove(); failure.remove(); });
   start();
   if (viewer.loaded) ready();
 }

@@ -16,6 +16,36 @@ import 'user_flows_test.dart' show MemoryTokens, ContractAdapter, garmentJson;
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   test(
+    'offline import retains honesty flags without private image paths or candidate URLs',
+    () {
+      final garment = Garment.fromJson({
+        ...garmentJson,
+        'brand': 'Hypothesis',
+        'import_metadata': {
+          'source_type': 'screenshot',
+          'save_mode': 'approximate',
+          'exact_match': false,
+          'fallback_mode': true,
+          'brand_status': 'unverified',
+          'original_image_path': 'private-object-key',
+          'original_image_url': 'https://example.com/?signature=private',
+          'candidates': [
+            {
+              'images': ['https://example.com/?signature=private'],
+            },
+          ],
+        },
+      });
+      final encoded = jsonEncode(garment.toCacheJson());
+      expect(encoded, isNot(contains('private-object-key')));
+      expect(encoded, isNot(contains('signature=private')));
+      expect(
+        Garment.fromJson(jsonDecode(encoded)).brandLabel,
+        contains('supposée'),
+      );
+    },
+  );
+  test(
     'secure storage writes are serialized and stale refresh cannot restore a session',
     () async {
       FlutterSecureStorage.setMockInitialValues({});
