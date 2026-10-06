@@ -1,0 +1,52 @@
+{
+  "models": [
+    {
+      "profile": "male",
+      "source_sha256": "70b444911129ffa237f071544c7885b0994f3ef993ac10ca2dd23d91b9c00485",
+      "asset": "apps/mobile/assets/3d/clothing/male-dressing.glb",
+      "sha256": "3f895b1dd1140a660b7090763cf2d1c94abd52afa7780d50be12fc6655877786",
+      "bytes": 5908184,
+      "authored_clothing_triangles": 56978,
+      "body_binary_preserved": true,
+      "templates": [
+        "boots",
+        "cargo",
+        "dress",
+        "hoodie",
+        "jacket",
+        "shorts",
+        "skirt",
+        "sneakers",
+        "sweater",
+        "trousers",
+        "tshirt"
+      ],
+      "license": "Project-authored clothing geometry and textile texture; original body supplied by user",
+      "source_photo_reconstruction": false
+    },
+    {
+      "profile": "female",
+      "source_sha256": "8e311f5d3e94a825dd6ceeed1f8b95a23e47977892c7007b3bc92ad6737f029b",
+      "asset": "apps/mobile/assets/3d/clothing/female-dressing.glb",
+      "sha256": "0197c9640ff917e9528ead698e06492689ed1cef654dd087469229dde4cf0272",
+      "bytes": 5058876,
+      "authored_clothing_triangles": 56010,
+      "body_binary_preserved": true,
+      "templates": [
+        "boots",
+        "cargo",
+        "dress",
+        "hoodie",
+        "jacket",
+        "shorts",
+        "skirt",
+        "sneakers",
+        "sweater",
+        "trousers",
+        "tshirt"
+      ],
+      "license": "Project-authored clothing geometry and textile texture; original body supplied by user",
+      "source_photo_reconstruction": false
+    }
+  ]
+}

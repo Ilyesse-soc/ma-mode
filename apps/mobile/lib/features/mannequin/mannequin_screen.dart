@@ -10,6 +10,7 @@ import '../../core/widgets/app_widgets.dart';
 import '../history/history_screen.dart';
 import 'mannequin_viewer.dart';
 import 'dressing_controller.dart';
+import 'clothing_spec.dart';
 export 'dressing_controller.dart' show DressingSelection;
 import '../../core/widgets/garment_card.dart';
 import 'package:flutter/services.dart';
@@ -132,14 +133,12 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
         ),
         data: (items) {
           _selection ??= DressingSelection(
-            items.where((g) => widget.initialGarmentIds.contains(g.id)),
+            widget.initialGarmentIds.isEmpty
+                ? ClothingSpec.referenceGarments(items)
+                : items.where((g) => widget.initialGarmentIds.contains(g.id)),
           );
-          // Deleted wardrobe entries must not remain in the visualization/save payload.
-          for (final garment in _selection!.items) {
-            if (!items.any((g) => g.id == garment.id)) {
-              _selection!.remove(garment.id);
-            }
-          }
+          // Refresh colors/categories and invalidate a saved outfit after deletion.
+          if (_selection!.reconcile(items)) _savedId = null;
           final choices = items.where(matches).toList();
           final selected = _selection!.items;
           return ListView(
@@ -191,7 +190,11 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
                     if (_dragging != null)
                       for (final zone in DressingDropZone.values)
                         Positioned.fromRect(
-                          rect: _zoneRect(zone, constraints.maxWidth, 400),
+                          rect: _zoneRect(
+                            zone,
+                            constraints.maxWidth,
+                            400 - MannequinViewer.controlsHeight,
+                          ),
                           child: DragTarget<Garment>(
                             key: ValueKey('drop-${zone.name}'),
                             onWillAcceptWithDetails: (details) =>
@@ -254,6 +257,7 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
                       .map(
                         (g) => InputChip(
                           label: Text(g.name),
+                          deleteButtonTooltipMessage: 'Retirer ${g.name}',
                           onDeleted: _saving
                               ? null
                               : () => setState(() {
@@ -351,9 +355,8 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
                   ),
                 ),
               const SizedBox(height: 14),
-              const SizedBox(height: 14),
               Text(
-                'Prévisualisation stylisée : mannequin de présentation et images de tes pièces. Aucun essayage 3D exact.',
+                'Habillage 3D stylisé selon les catégories disponibles. Photos ou illustrations à gauche ; les coupes restent une représentation approchée.',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               if (_error != null)
@@ -425,7 +428,11 @@ class _MannequinScreenState extends ConsumerState<MannequinScreen> {
               FilledButton.icon(
                 onPressed: () => Navigator.pop(context, true),
                 icon: const Icon(Icons.accessibility_new),
-                label: const Text('Porter sur mannequin'),
+                label: Text(
+                  ClothingSpec.templateFor(garment) == null
+                      ? 'Ajouter à ma tenue (aperçu photo)'
+                      : 'Habiller le mannequin',
+                ),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, false),

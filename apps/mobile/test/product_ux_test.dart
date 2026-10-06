@@ -67,7 +67,7 @@ void main() {
   });
   for (final presentation in ['male', 'female']) {
     test(
-      '$presentation preview uses the original GLB even with selected clothing',
+      '$presentation preview uses authored clothing and preserves source meshes',
       () async {
         final viewer = MannequinViewer(
           presentation: presentation,
@@ -76,7 +76,7 @@ void main() {
             piece('bottom', 'bottom', 'jeans', 'black'),
           ],
         ).createViewer();
-        expect(viewer.src, 'assets/3d/mannequins/$presentation.glb');
+        expect(viewer.src, 'assets/3d/clothing/$presentation-dressing.glb');
         expect(viewer.src.startsWith('data:'), false);
         final bytes = await rootBundle.load(viewer.src);
         final document =
@@ -89,7 +89,7 @@ void main() {
                   ),
                 )
                 as Map;
-        expect((document['meshes'] as List).map((m) => m['name']), [
+        expect((document['meshes'] as List).take(2).map((m) => m['name']), [
           'Mannequin_Body',
           'Mannequin_Briefs',
         ]);

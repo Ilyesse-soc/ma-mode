@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import '../../core/models.dart';
-import '../onboarding/onboarding_page.dart';
+import 'clothing_spec.dart';
 
-/// Quality fallback: supplied GLB plus real product images in the surrounding UI.
-/// Metadata and photographs cannot produce reliable fitted clothing geometry.
+/// Original body plus offline-authored clothing selected from the real wardrobe.
+/// These meshes are a stylized preview, not a reconstruction of product photos.
 class MannequinViewer extends StatefulWidget {
+  static const controlsHeight = 60.0;
   const MannequinViewer({
     super.key,
     required this.presentation,
@@ -24,6 +24,15 @@ class MannequinViewer extends StatefulWidget {
     'female' => 'assets/3d/mannequins/female.glb',
     _ => throw ArgumentError.value(presentation, 'presentation'),
   };
+
+  String get sourceAsset {
+    final original = assetFor(presentation);
+    return ClothingSpec.forGarments(garments).isEmpty
+        ? original
+        : 'assets/3d/clothing/$presentation-dressing.glb';
+  }
+
+  String get clothingSignature => ClothingSpec.encode(garments);
 
   static const statusHtml = '''
 <div slot="progress-bar" style="position:absolute;inset:0;display:grid;place-items:center;color:#ede2ce;font:14px sans-serif;pointer-events:none">Chargement du mannequin…</div>
@@ -71,10 +80,12 @@ document.body.style.background = 'transparent';
 
   /// Actual renderer settings, also used by regression tests.
   ModelViewer createViewer({String? source}) => ModelViewer(
-    key: ValueKey('${assetFor(presentation)}-${source?.hashCode ?? 0}'),
-    src: kIsWeb && (source ?? assetFor(presentation)).startsWith('assets/')
-        ? 'assets/${source ?? assetFor(presentation)}'
-        : source ?? assetFor(presentation),
+    // model_viewer_plus does not propagate material config after initState.
+    // Remount on a real clothing/color change; the GLB uses the renderer cache.
+    key: ValueKey('$sourceAsset-$clothingSignature-${source?.hashCode ?? 0}'),
+    src: kIsWeb && (source ?? sourceAsset).startsWith('assets/')
+        ? 'assets/${source ?? sourceAsset}'
+        : source ?? sourceAsset,
     alt: presentation == 'male' ? 'Mannequin homme' : 'Mannequin femme',
     cameraControls: true,
     disablePan: true,
@@ -82,6 +93,7 @@ document.body.style.background = 'transparent';
     autoRotateDelay: 0,
     rotationPerSecond: '20deg',
     disableZoom: false,
+    interactionPrompt: InteractionPrompt.none,
     loading: Loading.eager,
     cameraTarget: 'auto auto auto',
     cameraOrbit: '0deg 90deg 105%',
@@ -96,8 +108,10 @@ document.body.style.background = 'transparent';
     shadowSoftness: 1,
     backgroundColor: Colors.transparent,
     debugLogging: false,
-    innerModelViewerHtml: statusHtml,
-    relatedJs: statusJs,
+    innerModelViewerHtml:
+        '$statusHtml<script type="application/json" data-clothing-config>$clothingSignature</script>',
+    relatedJs:
+        '$statusJs\n${ClothingSpec.runtime}\n${ClothingSpec.controls}\ninstallClothingControls(viewer, reset);\nfunction dress() { try { applyClothing(viewer); } catch (_) { viewer.dataset.clothingState = "error"; message.textContent = "Impossible de charger les vêtements 3D."; showFailure(); } }\nviewer.addEventListener("load", dress);\nif (viewer.loaded) dress();',
   );
 
   @override
@@ -111,14 +125,14 @@ class _MannequinViewerState extends State<MannequinViewer> {
     try {
       final bytes = await DefaultAssetBundle.of(
         context,
-      ).load(MannequinViewer.assetFor(widget.presentation));
+      ).load(widget.sourceAsset);
       final valid =
           bytes.lengthInBytes >= 20 &&
           bytes.getUint32(0, Endian.little) == 0x46546c67 &&
           bytes.getUint32(4, Endian.little) == 2 &&
           bytes.getUint32(8, Endian.little) == bytes.lengthInBytes;
       if (!valid) return null;
-      return MannequinViewer.assetFor(widget.presentation);
+      return widget.sourceAsset;
     } catch (_) {
       return null;
     }
@@ -133,7 +147,7 @@ class _MannequinViewerState extends State<MannequinViewer> {
   @override
   void didUpdateWidget(MannequinViewer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.presentation != widget.presentation) {
+    if (oldWidget.sourceAsset != widget.sourceAsset) {
       _asset = _checkAsset();
     }
   }
@@ -158,15 +172,13 @@ class _MannequinViewerState extends State<MannequinViewer> {
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Opacity(
-                  opacity: .32,
-                  child: Image.asset(
-                    IntroAssets.pages.first.image,
-                    bundle: rootBundle,
-                    fit: BoxFit.cover,
-                    excludeFromSemantics: true,
-                    cacheWidth: 600,
-                    errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                child: const DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment(0, -.18),
+                      radius: .85,
+                      colors: [Color(0xFF55575A), Color(0xFF202123)],
+                    ),
                   ),
                 ),
               ),
@@ -218,14 +230,10 @@ class _DressingPainter extends CustomPainter {
   const _DressingPainter();
   @override
   void paint(Canvas canvas, Size size) {
-    final shelf = Paint()
-      ..color = const Color(0xFF777064).withValues(alpha: 0.35)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
     final floor = Paint()
       ..shader =
           const RadialGradient(
-            colors: [Color(0xFF514B40), Color(0xFF19191A)],
+            colors: [Color(0xFF151617), Color(0xFF292A2C)],
           ).createShader(
             Rect.fromLTWH(0, size.height * .78, size.width, size.height * .22),
           );
@@ -236,33 +244,6 @@ class _DressingPainter extends CustomPainter {
         height: size.height * .11,
       ),
       floor,
-    );
-    for (final x in [.05, .82]) {
-      final left = size.width * x;
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-            left,
-            size.height * .1,
-            size.width * .13,
-            size.height * .71,
-          ),
-          const Radius.circular(6),
-        ),
-        shelf,
-      );
-      for (final y in [.3, .5, .7]) {
-        canvas.drawLine(
-          Offset(left, size.height * y),
-          Offset(left + size.width * .13, size.height * y),
-          shelf,
-        );
-      }
-    }
-    canvas.drawLine(
-      Offset(size.width * .25, size.height * .12),
-      Offset(size.width * .75, size.height * .12),
-      shelf,
     );
   }
 

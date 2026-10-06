@@ -1,0 +1,107 @@
+{
+  "scope": "Real local Flutter UI, model-viewer engine and API; disposable QA account",
+  "viewport": "390x844",
+  "checks": [
+    {
+      "name": "owned reference selection actually clothes the male body",
+      "passed": true
+    },
+    {
+      "name": "controls leave the full figure unobstructed",
+      "passed": true
+    },
+    {
+      "name": "hoodie is grey and jacket is charcoal",
+      "passed": true
+    },
+    {
+      "name": "selected clothing is opaque and unselected templates are masked",
+      "passed": true
+    },
+    {
+      "name": "covered body and underwear cannot poke through cargo",
+      "passed": true
+    },
+    {
+      "name": "360 button starts genuine automatic rotation",
+      "passed": true
+    },
+    {
+      "name": "360 button pauses automatic rotation",
+      "passed": true
+    },
+    {
+      "name": "Zoom button changes actual camera radius",
+      "passed": true
+    },
+    {
+      "name": "reset returns the rotated body to the front",
+      "passed": true
+    },
+    {
+      "name": "clothing remains applied at 90 degrees",
+      "passed": true
+    },
+    {
+      "name": "clothing remains applied at 180 degrees",
+      "passed": true
+    },
+    {
+      "name": "clothing remains applied at 270 degrees",
+      "passed": true
+    },
+    {
+      "name": "clothing remains applied at 360 degrees",
+      "passed": true
+    },
+    {
+      "name": "real drag gesture rotates the clothed model",
+      "passed": true
+    },
+    {
+      "name": "real wheel zoom works on clothed model",
+      "passed": true
+    },
+    {
+      "name": "recenter control resets camera",
+      "passed": true
+    },
+    {
+      "name": "actual wardrobe button replaces hoodie with blue t-shirt",
+      "passed": true
+    },
+    {
+      "name": "removal restores visible body under open jacket",
+      "passed": true
+    },
+    {
+      "name": "real long-press and drop dresses the torso",
+      "passed": true
+    },
+    {
+      "name": "female profile uses her own fitted clothing asset",
+      "passed": true
+    },
+    {
+      "name": "saved outfit contains exactly selected owned garment IDs",
+      "passed": true
+    },
+    {
+      "name": "wear action reaches real history",
+      "passed": true
+    },
+    {
+      "name": "missing clothing GLB shows a real error",
+      "passed": true
+    },
+    {
+      "name": "valid clothing asset recovers after failure",
+      "passed": true
+    },
+    {
+      "name": "no JavaScript exceptions",
+      "passed": true
+    }
+  ],
+  "javascriptErrors": []
+}

@@ -1,6 +1,7 @@
 // model_viewer_plus web inserts markup via innerHTML: embedded scripts do not run.
 // Load the already bundled renderer and attach lifecycle handlers to each real view.
 import './assets/packages/model_viewer_plus/assets/model-viewer.min.js';
+import {applyClothing, installClothingControls} from './clothing-runtime.js';
 
 const initialized = new WeakSet();
 const active = new Map();
@@ -30,6 +31,7 @@ function attach(viewer) {
     viewer.jumpCameraToGoal();
   });
   parent.append(reset);
+  const removeControls = installClothingControls(viewer, reset);
   let timeout, started;
   const progress = viewer.querySelector('[slot="progress-bar"]');
   const failed = () => {
@@ -39,6 +41,13 @@ function attach(viewer) {
     if (progress) progress.style.display = 'none';
   };
   const ready = () => {
+    try { applyClothing(viewer); }
+    catch (error) {
+      viewer.dataset.clothingState = 'error';
+      message.textContent = 'Impossible de charger les vêtements 3D.';
+      failed();
+      return;
+    }
     clearTimeout(timeout);
     viewer.dataset.loadState = 'loaded';
     viewer.dataset.loadMs = String(Math.round(performance.now() - started));
@@ -65,7 +74,7 @@ function attach(viewer) {
     viewer.src = '';
     requestAnimationFrame(() => { viewer.src = source; });
   });
-  active.set(viewer, () => { clearTimeout(timeout); reset.remove(); failure.remove(); });
+  active.set(viewer, () => { clearTimeout(timeout); removeControls(); reset.remove(); failure.remove(); });
   start();
   if (viewer.loaded) ready();
 }

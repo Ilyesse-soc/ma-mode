@@ -344,7 +344,7 @@ class _GarmentDetailScreenState extends ConsumerState<GarmentDetailScreen> {
                     child: const Text('Modifier le vêtement'),
                   ),
                   Text(
-                    'Prévisualisation : mannequin de présentation et image de ta pièce. L’essayage 3D exact est indisponible.',
+                    'Prévisualisation : habillage 3D stylisé par catégorie et couleur, avec la fiche de ta pièce. La coupe exacte du produit n’est pas reconstruite.',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.secondary,
                     ),

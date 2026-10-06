@@ -665,7 +665,7 @@ class _OutfitFlowScreenState extends ConsumerState<OutfitFlowScreen> {
         ),
         const SizedBox(height: 12),
         const Text(
-          'Prévisualisation stylisée : les pièces sont présentées à côté du mannequin.',
+          'Habillage 3D stylisé selon les catégories disponibles. Les fiches des pièces restent à côté du mannequin.',
         ),
         Wrap(
           spacing: 8,

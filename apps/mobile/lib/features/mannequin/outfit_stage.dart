@@ -66,7 +66,7 @@ class OutfitStage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: Text(
-            'Prévisualisation stylisée · Les images de tes pièces accompagnent le mannequin. L’essayage 3D exact nécessite des vêtements 3D adaptés.',
+            'Habillage 3D stylisé selon les catégories disponibles. Photos ou illustrations à gauche ; les pièces sans modèle 3D restent en aperçu photo.',
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
